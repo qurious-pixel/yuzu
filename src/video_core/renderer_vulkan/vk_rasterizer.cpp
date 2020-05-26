@@ -532,14 +532,14 @@ void RasterizerVulkan::OnCPUWrite(VAddr addr, u64 size) {
         return;
     }
     texture_cache.OnCPUWrite(addr, size);
-    pipeline_cache.InvalidateRegion(addr, size);
+    pipeline_cache.OnCPUWrite(addr, size);
     buffer_cache.OnCPUWrite(addr, size);
-    query_cache.InvalidateRegion(addr, size);
 }
 
 void RasterizerVulkan::SyncGuestHost() {
     texture_cache.SyncGuestHost();
     buffer_cache.SyncGuestHost();
+    pipeline_cache.SyncGuestHost();
 }
 
 void RasterizerVulkan::SignalSemaphore(GPUVAddr addr, u32 value) {
@@ -569,7 +569,9 @@ void RasterizerVulkan::ReleaseFences() {
 }
 
 void RasterizerVulkan::FlushAndInvalidateRegion(VAddr addr, u64 size) {
-    FlushRegion(addr, size);
+    if (Settings::IsGPULevelExtreme()) {
+        FlushRegion(addr, size);
+    }
     InvalidateRegion(addr, size);
 }
 

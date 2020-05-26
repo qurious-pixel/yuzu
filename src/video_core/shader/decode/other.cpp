@@ -109,6 +109,27 @@ u32 ShaderIR::DecodeOther(NodeBlock& bb, u32 pc) {
                 return Operation(OperationCode::WorkGroupIdY);
             case SystemVariable::CtaIdZ:
                 return Operation(OperationCode::WorkGroupIdZ);
+            case SystemVariable::EqMask:
+            case SystemVariable::LtMask:
+            case SystemVariable::LeMask:
+            case SystemVariable::GtMask:
+            case SystemVariable::GeMask:
+                uses_warps = true;
+                switch (instr.sys20) {
+                case SystemVariable::EqMask:
+                    return Operation(OperationCode::ThreadEqMask);
+                case SystemVariable::LtMask:
+                    return Operation(OperationCode::ThreadLtMask);
+                case SystemVariable::LeMask:
+                    return Operation(OperationCode::ThreadLeMask);
+                case SystemVariable::GtMask:
+                    return Operation(OperationCode::ThreadGtMask);
+                case SystemVariable::GeMask:
+                    return Operation(OperationCode::ThreadGeMask);
+                default:
+                    UNREACHABLE();
+                    return Immediate(0u);
+                }
             default:
                 UNIMPLEMENTED_MSG("Unhandled system move: {}",
                                   static_cast<u32>(instr.sys20.Value()));
@@ -270,6 +291,11 @@ u32 ShaderIR::DecodeOther(NodeBlock& bb, u32 pc) {
         UNIMPLEMENTED_IF(instr.isberd.mode != Tegra::Shader::IsberdMode::None);
         LOG_WARNING(HW_GPU, "ISBERD instruction is incomplete");
         SetRegister(bb, instr.gpr0, GetRegister(instr.gpr8));
+        break;
+    }
+    case OpCode::Id::BAR: {
+        UNIMPLEMENTED_IF_MSG(instr.value != 0xF0A81B8000070000ULL, "BAR is not BAR.SYNC 0x0");
+        bb.push_back(Operation(OperationCode::Barrier));
         break;
     }
     case OpCode::Id::MEMBAR: {

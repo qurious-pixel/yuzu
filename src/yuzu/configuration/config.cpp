@@ -643,6 +643,8 @@ void Config::ReadRendererValues() {
     Settings::values.use_asynchronous_gpu_emulation =
         ReadSetting(QStringLiteral("use_asynchronous_gpu_emulation"), false).toBool();
     Settings::values.use_vsync = ReadSetting(QStringLiteral("use_vsync"), true).toBool();
+    Settings::values.use_assembly_shaders =
+        ReadSetting(QStringLiteral("use_assembly_shaders"), false).toBool();
     Settings::values.use_fast_gpu_time =
         ReadSetting(QStringLiteral("use_fast_gpu_time"), true).toBool();
     Settings::values.force_30fps_mode =
@@ -686,6 +688,8 @@ void Config::ReadSystemValues() {
     Settings::values.language_index = ReadSetting(QStringLiteral("language_index"), 1).toInt();
 
     Settings::values.region_index = ReadSetting(QStringLiteral("region_index"), 1).toInt();
+
+    Settings::values.time_zone_index = ReadSetting(QStringLiteral("time_zone_index"), 0).toInt();
 
     const auto rng_seed_enabled = ReadSetting(QStringLiteral("rng_seed_enabled"), false).toBool();
     if (rng_seed_enabled) {
@@ -1088,6 +1092,8 @@ void Config::SaveRendererValues() {
     WriteSetting(QStringLiteral("use_asynchronous_gpu_emulation"),
                  Settings::values.use_asynchronous_gpu_emulation, false);
     WriteSetting(QStringLiteral("use_vsync"), Settings::values.use_vsync, true);
+    WriteSetting(QStringLiteral("use_assembly_shaders"), Settings::values.use_assembly_shaders,
+                 false);
     WriteSetting(QStringLiteral("use_fast_gpu_time"), Settings::values.use_fast_gpu_time, true);
     WriteSetting(QStringLiteral("force_30fps_mode"), Settings::values.force_30fps_mode, false);
 
@@ -1126,6 +1132,7 @@ void Config::SaveSystemValues() {
     WriteSetting(QStringLiteral("current_user"), Settings::values.current_user, 0);
     WriteSetting(QStringLiteral("language_index"), Settings::values.language_index, 1);
     WriteSetting(QStringLiteral("region_index"), Settings::values.region_index, 1);
+    WriteSetting(QStringLiteral("time_zone_index"), Settings::values.time_zone_index, 0);
 
     WriteSetting(QStringLiteral("rng_seed_enabled"), Settings::values.rng_seed.has_value(), false);
     WriteSetting(QStringLiteral("rng_seed"), Settings::values.rng_seed.value_or(0), 0);

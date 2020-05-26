@@ -1538,7 +1538,9 @@ private:
         Expression target;
         if (const auto gpr = std::get_if<GprNode>(&*dest)) {
             if (gpr->GetIndex() == Register::ZeroIndex) {
-                // Writing to Register::ZeroIndex is a no op
+                // Writing to Register::ZeroIndex is a no op but we still have to visit the source
+                // as it might have side effects.
+                code.AddLine("{};", Visit(src).GetCode());
                 return {};
             }
             target = {GetRegister(gpr->GetIndex()), Type::Float};
@@ -2309,6 +2311,18 @@ private:
         return {"gl_SubGroupInvocationARB", Type::Uint};
     }
 
+    template <const std::string_view& comparison>
+    Expression ThreadMask(Operation) {
+        if (device.HasWarpIntrinsics()) {
+            return {fmt::format("gl_Thread{}MaskNV", comparison), Type::Uint};
+        }
+        if (device.HasShaderBallot()) {
+            return {fmt::format("uint(gl_SubGroup{}MaskARB)", comparison), Type::Uint};
+        }
+        LOG_ERROR(Render_OpenGL, "Thread mask intrinsics are required by the shader");
+        return {"0U", Type::Uint};
+    }
+
     Expression ShuffleIndexed(Operation operation) {
         std::string value = VisitOperand(operation, 0).AsFloat();
 
@@ -2319,6 +2333,15 @@ private:
 
         const std::string index = VisitOperand(operation, 1).AsUint();
         return {fmt::format("readInvocationARB({}, {})", value, index), Type::Float};
+    }
+
+    Expression Barrier(Operation) {
+        if (!ir.IsDecompiled()) {
+            LOG_ERROR(Render_OpenGL, "barrier() used but shader is not decompiled");
+            return {};
+        }
+        code.AddLine("barrier();");
+        return {};
     }
 
     Expression MemoryBarrierGL(Operation) {
@@ -2336,6 +2359,12 @@ private:
         static constexpr std::string_view GreaterThan = ">";
         static constexpr std::string_view NotEqual = "!=";
         static constexpr std::string_view GreaterEqual = ">=";
+
+        static constexpr std::string_view Eq = "Eq";
+        static constexpr std::string_view Ge = "Ge";
+        static constexpr std::string_view Gt = "Gt";
+        static constexpr std::string_view Le = "Le";
+        static constexpr std::string_view Lt = "Lt";
 
         static constexpr std::string_view Add = "Add";
         static constexpr std::string_view Min = "Min";
@@ -2554,8 +2583,14 @@ private:
         &GLSLDecompiler::VoteEqual,
 
         &GLSLDecompiler::ThreadId,
+        &GLSLDecompiler::ThreadMask<Func::Eq>,
+        &GLSLDecompiler::ThreadMask<Func::Ge>,
+        &GLSLDecompiler::ThreadMask<Func::Gt>,
+        &GLSLDecompiler::ThreadMask<Func::Le>,
+        &GLSLDecompiler::ThreadMask<Func::Lt>,
         &GLSLDecompiler::ShuffleIndexed,
 
+        &GLSLDecompiler::Barrier,
         &GLSLDecompiler::MemoryBarrierGL,
     };
     static_assert(operation_decompilers.size() == static_cast<std::size_t>(OperationCode::Amount));
