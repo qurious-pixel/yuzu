@@ -1,6 +1,19 @@
 language: cpp
 matrix:
   include:
+      - os: linux
+      env: NAME="linux appimage"
+      sudo: required
+      dist: trusty
+      services: docker
+      addons:
+        apt:
+          packages:
+            - p7zip-full
+      install: "./.travis/appimage/deps.sh"
+      script: "./.travis/appimage/build.sh"
+      after_success: "./.travis/appimage/appimage.sh"
+      cache: ccache
     - os: linux
       env: NAME="clang-format"
       sudo: required
