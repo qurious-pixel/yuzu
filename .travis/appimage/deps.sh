@@ -1,3 +1,3 @@
 #!/bin/sh -ex
 
-docker pull quriouspixel/build-environments:linux-appimage
+docker pull quriouspixel/yuzu:latest
