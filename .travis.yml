@@ -4,7 +4,7 @@ matrix:
     - os: linux
       env: NAME="linux appimage"
       sudo: required
-      dist: xenial
+      dist: focal
       services: docker
       addons:
         apt:
