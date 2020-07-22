@@ -1,11 +1,13 @@
 #!/bin/bash -ex
 
-mkdir build && cd build
+BUILDBIN=/yuzu/build/bin
+
+cd /yuzu
 	curl -sLO "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
 	chmod a+x linuxdeployqt*.AppImage
 
 mkdir squashfs-root
-cp -P "$DIR_NAME"/yuzu squashfs-root/usr/bin/
+cp -P "$BUILDBIN"/yuzu squashfs-root/usr/bin/
 curl -sL https://raw.githubusercontent.com/yuzu-emu/yuzu/master/dist/yuzu.svg -o ./squashfs-root/yuzu.svg
 curl -sL https://raw.githubusercontent.com/yuzu-emu/yuzu/master/dist/yuzu.desktop -o ./squashfs-root/yuzu.desktop
 curl -sL https://github.com/darealshinji/AppImageKit-checkrt/releases/download/continuous/AppRun-patched-x86_64 -o ./squashfs-root/AppRun
