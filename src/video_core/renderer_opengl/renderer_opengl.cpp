@@ -455,8 +455,8 @@ void RendererOpenGL::LoadColorToActiveGLTexture(u8 color_r, u8 color_g, u8 color
 void RendererOpenGL::InitOpenGLObjects() {
     frame_mailbox = std::make_unique<FrameMailbox>();
 
-    glClearColor(Settings::values.bg_red, Settings::values.bg_green, Settings::values.bg_blue,
-                 0.0f);
+    glClearColor(Settings::values.bg_red.GetValue(), Settings::values.bg_green.GetValue(),
+                 Settings::values.bg_blue.GetValue(), 0.0f);
 
     // Create shader programs
     OGLShader vertex_shader;
@@ -488,6 +488,15 @@ void RendererOpenGL::InitOpenGLObjects() {
 
     // Clear screen to black
     LoadColorToActiveGLTexture(0, 0, 0, 0, screen_info.texture);
+
+    // Enable unified vertex attributes and query vertex buffer address when the driver supports it
+    if (device.HasVertexBufferUnifiedMemory()) {
+        glEnableClientState(GL_VERTEX_ATTRIB_ARRAY_UNIFIED_NV);
+
+        glMakeNamedBufferResidentNV(vertex_buffer.handle, GL_READ_ONLY);
+        glGetNamedBufferParameterui64vNV(vertex_buffer.handle, GL_BUFFER_GPU_ADDRESS_NV,
+                                         &vertex_buffer_address);
+    }
 }
 
 void RendererOpenGL::AddTelemetryFields() {
@@ -526,12 +535,12 @@ void RendererOpenGL::ConfigureFramebufferTexture(TextureInfo& texture,
 
     GLint internal_format;
     switch (framebuffer.pixel_format) {
-    case Tegra::FramebufferConfig::PixelFormat::ABGR8:
+    case Tegra::FramebufferConfig::PixelFormat::A8B8G8R8_UNORM:
         internal_format = GL_RGBA8;
         texture.gl_format = GL_RGBA;
         texture.gl_type = GL_UNSIGNED_INT_8_8_8_8_REV;
         break;
-    case Tegra::FramebufferConfig::PixelFormat::RGB565:
+    case Tegra::FramebufferConfig::PixelFormat::RGB565_UNORM:
         internal_format = GL_RGB565;
         texture.gl_format = GL_RGB;
         texture.gl_type = GL_UNSIGNED_SHORT_5_6_5;
@@ -552,8 +561,8 @@ void RendererOpenGL::ConfigureFramebufferTexture(TextureInfo& texture,
 void RendererOpenGL::DrawScreen(const Layout::FramebufferLayout& layout) {
     if (renderer_settings.set_background_color) {
         // Update background color before drawing
-        glClearColor(Settings::values.bg_red, Settings::values.bg_green, Settings::values.bg_blue,
-                     0.0f);
+        glClearColor(Settings::values.bg_red.GetValue(), Settings::values.bg_green.GetValue(),
+                     Settings::values.bg_blue.GetValue(), 0.0f);
     }
 
     // Set projection matrix
@@ -656,7 +665,13 @@ void RendererOpenGL::DrawScreen(const Layout::FramebufferLayout& layout) {
                          offsetof(ScreenRectVertex, tex_coord));
     glVertexAttribBinding(PositionLocation, 0);
     glVertexAttribBinding(TexCoordLocation, 0);
-    glBindVertexBuffer(0, vertex_buffer.handle, 0, sizeof(ScreenRectVertex));
+    if (device.HasVertexBufferUnifiedMemory()) {
+        glBindVertexBuffer(0, 0, 0, sizeof(ScreenRectVertex));
+        glBufferAddressRangeNV(GL_VERTEX_ATTRIB_ARRAY_ADDRESS_NV, 0, vertex_buffer_address,
+                               sizeof(vertices));
+    } else {
+        glBindVertexBuffer(0, vertex_buffer.handle, 0, sizeof(ScreenRectVertex));
+    }
 
     glBindTextureUnit(0, screen_info.display_texture);
     glBindSampler(0, 0);
@@ -751,8 +766,9 @@ void RendererOpenGL::RenderScreenshot() {
 }
 
 bool RendererOpenGL::Init() {
-    if (GLAD_GL_KHR_debug) {
+    if (Settings::values.renderer_debug && GLAD_GL_KHR_debug) {
         glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
         glDebugMessageCallback(DebugHandler, nullptr);
     }
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.15)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/externals/cmake-modules")
@@ -13,7 +13,8 @@ project(yuzu)
 option(ENABLE_SDL2 "Enable the SDL2 frontend" ON)
 
 option(ENABLE_QT "Enable the Qt frontend" ON)
-CMAKE_DEPENDENT_OPTION(YUZU_USE_BUNDLED_QT "Download bundled Qt binaries" OFF "ENABLE_QT;MSVC" OFF)
+option(ENABLE_QT_TRANSLATION "Enable translations for the Qt frontend" OFF)
+CMAKE_DEPENDENT_OPTION(YUZU_USE_BUNDLED_QT "Download bundled Qt binaries" ON "ENABLE_QT;MSVC" OFF)
 
 option(ENABLE_WEB_SERVICE "Enable web services (telemetry, etc.)" ON)
 
@@ -118,8 +119,17 @@ message(STATUS "Target architecture: ${ARCHITECTURE}")
 # Configure C++ standard
 # ===========================
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# boost asio's concept usage doesn't play nicely with some compilers yet.
+add_definitions(-DBOOST_ASIO_DISABLE_CONCEPTS)
+if (MSVC)
+    add_compile_options(/std:c++latest)
+
+    # cubeb and boost still make use of deprecated result_of.
+    add_definitions(-D_HAS_DEPRECATED_RESULT_OF)
+else()
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
 
 # Output binaries to bin/
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -151,14 +161,11 @@ macro(yuzu_find_packages)
     #    Cmake Pkg Prefix  Version     Conan Pkg
         "Boost             1.71        boost/1.72.0"
         "Catch2            2.11        catch2/2.11.0"
-        "fmt               6.2         fmt/6.2.0"
-        "OpenSSL           1.1         openssl/1.1.1f"
+        "fmt               7.0         fmt/7.0.1"
     # can't use until https://github.com/bincrafters/community/issues/1173
         #"libzip            1.5         libzip/1.5.2@bincrafters/stable"
         "lz4               1.8         lz4/1.9.2"
         "nlohmann_json     3.7         nlohmann_json/3.7.3"
-    # we need to be careful as the version check might be broken https://github.com/xiph/opus/issues/110
-        "opus              1.3         opus/1.3.1"
         "ZLIB              1.2         zlib/1.2.11"
         "zstd              1.4         zstd/1.4.4"
     )
@@ -214,7 +221,14 @@ if(ENABLE_QT)
 
         set(QT_PREFIX_HINT HINTS "${QT_PREFIX}")
     endif()
-    find_package(Qt5 5.9 COMPONENTS Widgets OpenGL ${QT_PREFIX_HINT})
+    find_package(Qt5 5.9 COMPONENTS Widgets ${QT_PREFIX_HINT})
+    if (YUZU_USE_QT_WEB_ENGINE)
+        find_package(Qt5 COMPONENTS WebEngineCore WebEngineWidgets)
+    endif()
+	
+    if (ENABLE_QT_TRANSLATION)
+        find_package(Qt5 REQUIRED COMPONENTS LinguistTools ${QT_PREFIX_HINT})
+    endif()
     if (NOT Qt5_FOUND)
         list(APPEND CONAN_REQUIRED_LIBS "qt/5.14.1@bincrafters/stable")
     endif()
@@ -287,7 +301,7 @@ if (CONAN_REQUIRED_LIBS)
     if(ENABLE_QT)
         list(APPEND CMAKE_MODULE_PATH "${CONAN_QT_ROOT_RELEASE}")
         list(APPEND CMAKE_PREFIX_PATH "${CONAN_QT_ROOT_RELEASE}")
-        find_package(Qt5 5.9 REQUIRED COMPONENTS Widgets OpenGL)
+        find_package(Qt5 5.9 REQUIRED COMPONENTS Widgets)
         if (YUZU_USE_QT_WEB_ENGINE)
             find_package(Qt5 REQUIRED COMPONENTS WebEngineCore WebEngineWidgets)
         endif()
@@ -312,15 +326,6 @@ elseif (TARGET Boost::boost)
     add_library(boost ALIAS Boost::boost)
 endif()
 
-if (NOT TARGET OpenSSL::SSL)
-    set_target_properties(OpenSSL::OpenSSL PROPERTIES IMPORTED_GLOBAL TRUE)
-    add_library(OpenSSL::SSL ALIAS OpenSSL::OpenSSL)
-endif()
-if (NOT TARGET OpenSSL::Crypto)
-    set_target_properties(OpenSSL::OpenSSL PROPERTIES IMPORTED_GLOBAL TRUE)
-    add_library(OpenSSL::Crypto ALIAS OpenSSL::OpenSSL)
-endif()
-
 if (TARGET sdl2::sdl2)
     # imported from the conan generated sdl2Config.cmake
     set_target_properties(sdl2::sdl2 PROPERTIES IMPORTED_GLOBAL TRUE)
@@ -336,6 +341,17 @@ elseif(SDL2_FOUND)
     include_directories(SYSTEM ${SDL2_INCLUDE_DIRS})
     add_library(SDL2 INTERFACE)
     target_link_libraries(SDL2 INTERFACE "${SDL2_LIBRARIES}")
+endif()
+
+# Ensure libusb is properly configured (based on dolphin libusb include)
+if(NOT APPLE)
+    include(FindPkgConfig)
+    find_package(LibUSB)
+endif()
+if (NOT LIBUSB_FOUND)
+    add_subdirectory(externals/libusb)
+    set(LIBUSB_INCLUDE_DIR "")
+    set(LIBUSB_LIBRARIES usb)
 endif()
 
 # Prefer the -pthread flag on Linux.

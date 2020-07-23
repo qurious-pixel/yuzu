@@ -90,6 +90,13 @@ public:
         : ServiceFramework("ISteadyClock"), clock_core{clock_core}, system{system} {
         static const FunctionInfo functions[] = {
             {0, &ISteadyClock::GetCurrentTimePoint, "GetCurrentTimePoint"},
+            {2, nullptr, "GetTestOffset"},
+            {3, nullptr, "SetTestOffset"},
+            {100, nullptr, "GetRtcValue"},
+            {101, nullptr, "IsRtcResetDetected"},
+            {102, nullptr, "GetSetupResultValue"},
+            {200, nullptr, "GetInternalOffset"},
+            {201, nullptr, "SetInternalOffset"},
         };
         RegisterHandlers(functions);
     }
@@ -234,9 +241,8 @@ void Module::Interface::CalculateMonotonicSystemClockBaseTimePoint(Kernel::HLERe
     const auto current_time_point{steady_clock_core.GetCurrentTimePoint(system)};
 
     if (current_time_point.clock_source_id == context.steady_time_point.clock_source_id) {
-        const auto ticks{Clock::TimeSpanType::FromTicks(
-            Core::Timing::CpuCyclesToClockCycles(system.CoreTiming().GetTicks()),
-            Core::Hardware::CNTFREQ)};
+        const auto ticks{Clock::TimeSpanType::FromTicks(system.CoreTiming().GetClockTicks(),
+                                                        Core::Hardware::CNTFREQ)};
         const s64 base_time_point{context.offset + current_time_point.time_point -
                                   ticks.ToSeconds()};
         IPC::ResponseBuilder rb{ctx, (sizeof(s64) / 4) + 2};

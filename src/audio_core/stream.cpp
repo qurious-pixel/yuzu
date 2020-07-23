@@ -38,7 +38,7 @@ Stream::Stream(Core::Timing::CoreTiming& core_timing, u32 sample_rate, Format fo
       sink_stream{sink_stream}, core_timing{core_timing}, name{std::move(name_)} {
 
     release_event = Core::Timing::CreateEvent(
-        name, [this](u64 userdata, s64 cycles_late) { ReleaseActiveBuffer(); });
+        name, [this](u64, std::chrono::nanoseconds ns_late) { ReleaseActiveBuffer(ns_late); });
 }
 
 void Stream::Play() {
@@ -59,15 +59,13 @@ Stream::State Stream::GetState() const {
     return state;
 }
 
-s64 Stream::GetBufferReleaseCycles(const Buffer& buffer) const {
+std::chrono::nanoseconds Stream::GetBufferReleaseNS(const Buffer& buffer) const {
     const std::size_t num_samples{buffer.GetSamples().size() / GetNumChannels()};
-    const auto us =
-        std::chrono::microseconds((static_cast<u64>(num_samples) * 1000000) / sample_rate);
-    return Core::Timing::usToCycles(us);
+    return std::chrono::nanoseconds((static_cast<u64>(num_samples) * 1000000000ULL) / sample_rate);
 }
 
 static void VolumeAdjustSamples(std::vector<s16>& samples, float game_volume) {
-    const float volume{std::clamp(Settings::values.volume - (1.0f - game_volume), 0.0f, 1.0f)};
+    const float volume{std::clamp(Settings::Volume() - (1.0f - game_volume), 0.0f, 1.0f)};
 
     if (volume == 1.0f) {
         return;
@@ -80,7 +78,7 @@ static void VolumeAdjustSamples(std::vector<s16>& samples, float game_volume) {
     }
 }
 
-void Stream::PlayNextBuffer() {
+void Stream::PlayNextBuffer(std::chrono::nanoseconds ns_late) {
     if (!IsPlaying()) {
         // Ensure we are in playing state before playing the next buffer
         sink_stream.Flush();
@@ -105,14 +103,18 @@ void Stream::PlayNextBuffer() {
 
     sink_stream.EnqueueSamples(GetNumChannels(), active_buffer->GetSamples());
 
-    core_timing.ScheduleEvent(GetBufferReleaseCycles(*active_buffer), release_event, {});
+    const auto time_stretch_delta = Settings::values.enable_audio_stretching.GetValue()
+                                        ? std::chrono::nanoseconds::zero()
+                                        : ns_late;
+    const auto future_time = GetBufferReleaseNS(*active_buffer) - time_stretch_delta;
+    core_timing.ScheduleEvent(future_time, release_event, {});
 }
 
-void Stream::ReleaseActiveBuffer() {
+void Stream::ReleaseActiveBuffer(std::chrono::nanoseconds ns_late) {
     ASSERT(active_buffer);
     released_buffers.push(std::move(active_buffer));
     release_callback();
-    PlayNextBuffer();
+    PlayNextBuffer(ns_late);
 }
 
 bool Stream::QueueBuffer(BufferPtr&& buffer) {

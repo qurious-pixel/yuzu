@@ -2,6 +2,7 @@
 // Licensed under GPLv2 or any later version
 // Refer to the license.txt file included.
 
+#include <chrono>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -180,7 +181,7 @@ int main(int argc, char** argv) {
     Core::System& system{Core::System::GetInstance()};
 
     std::unique_ptr<EmuWindow_SDL2> emu_window;
-    switch (Settings::values.renderer_backend) {
+    switch (Settings::values.renderer_backend.GetValue()) {
     case Settings::RendererBackend::OpenGL:
         emu_window = std::make_unique<EmuWindow_SDL2_GL>(system, fullscreen);
         break;
@@ -236,9 +237,11 @@ int main(int argc, char** argv) {
     system.Renderer().Rasterizer().LoadDiskResources();
 
     std::thread render_thread([&emu_window] { emu_window->Present(); });
+    system.Run();
     while (emu_window->IsOpen()) {
-        system.RunLoop();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+    system.Pause();
     render_thread.join();
 
     system.Shutdown();

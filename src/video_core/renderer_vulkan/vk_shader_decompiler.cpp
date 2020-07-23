@@ -400,8 +400,9 @@ private:
         u32 binding = specialization.base_binding;
         binding = DeclareConstantBuffers(binding);
         binding = DeclareGlobalBuffers(binding);
-        binding = DeclareTexelBuffers(binding);
+        binding = DeclareUniformTexels(binding);
         binding = DeclareSamplers(binding);
+        binding = DeclareStorageTexels(binding);
         binding = DeclareImages(binding);
 
         const Id main = OpFunction(t_void, {}, TypeFunction(t_void));
@@ -684,13 +685,19 @@ private:
         }
         t_smem_uint = TypePointer(spv::StorageClass::Workgroup, t_uint);
 
-        const u32 smem_size = specialization.shared_memory_size;
+        u32 smem_size = specialization.shared_memory_size * 4;
         if (smem_size == 0) {
             // Avoid declaring an empty array.
             return;
         }
-        const auto element_count = static_cast<u32>(Common::AlignUp(smem_size, 4) / 4);
-        const Id type_array = TypeArray(t_uint, Constant(t_uint, element_count));
+        const u32 limit = device.GetMaxComputeSharedMemorySize();
+        if (smem_size > limit) {
+            LOG_ERROR(Render_Vulkan, "Shared memory size {} is clamped to host's limit {}",
+                      smem_size, limit);
+            smem_size = limit;
+        }
+
+        const Id type_array = TypeArray(t_uint, Constant(t_uint, smem_size / 4));
         const Id type_pointer = TypePointer(spv::StorageClass::Workgroup, type_array);
         Name(type_pointer, "SharedMemory");
 
@@ -741,8 +748,10 @@ private:
             if (!IsGenericAttribute(index)) {
                 continue;
             }
-
             const u32 location = GetGenericAttributeLocation(index);
+            if (!IsAttributeEnabled(location)) {
+                continue;
+            }
             const auto type_descriptor = GetAttributeType(location);
             Id type;
             if (IsInputAttributeArray()) {
@@ -887,7 +896,7 @@ private:
         return binding;
     }
 
-    u32 DeclareTexelBuffers(u32 binding) {
+    u32 DeclareUniformTexels(u32 binding) {
         for (const auto& sampler : ir.GetSamplers()) {
             if (!sampler.is_buffer) {
                 continue;
@@ -908,7 +917,7 @@ private:
             Decorate(id, spv::Decoration::Binding, binding++);
             Decorate(id, spv::Decoration::DescriptorSet, DESCRIPTOR_SET);
 
-            texel_buffers.emplace(sampler.index, TexelBuffer{image_type, id});
+            uniform_texels.emplace(sampler.index, TexelBuffer{image_type, id});
         }
         return binding;
     }
@@ -943,29 +952,46 @@ private:
         return binding;
     }
 
-    u32 DeclareImages(u32 binding) {
+    u32 DeclareStorageTexels(u32 binding) {
         for (const auto& image : ir.GetImages()) {
-            const auto [dim, arrayed] = GetImageDim(image);
-            constexpr int depth = 0;
-            constexpr bool ms = false;
-            constexpr int sampled = 2; // This won't be accessed with a sampler
-            constexpr auto format = spv::ImageFormat::Unknown;
-            const Id image_type = TypeImage(t_uint, dim, depth, arrayed, ms, sampled, format, {});
-            const Id pointer_type = TypePointer(spv::StorageClass::UniformConstant, image_type);
-            const Id id = OpVariable(pointer_type, spv::StorageClass::UniformConstant);
-            AddGlobalVariable(Name(id, fmt::format("image_{}", image.index)));
-
-            Decorate(id, spv::Decoration::Binding, binding++);
-            Decorate(id, spv::Decoration::DescriptorSet, DESCRIPTOR_SET);
-            if (image.is_read && !image.is_written) {
-                Decorate(id, spv::Decoration::NonWritable);
-            } else if (image.is_written && !image.is_read) {
-                Decorate(id, spv::Decoration::NonReadable);
+            if (image.type != Tegra::Shader::ImageType::TextureBuffer) {
+                continue;
             }
-
-            images.emplace(image.index, StorageImage{image_type, id});
+            DeclareImage(image, binding);
         }
         return binding;
+    }
+
+    u32 DeclareImages(u32 binding) {
+        for (const auto& image : ir.GetImages()) {
+            if (image.type == Tegra::Shader::ImageType::TextureBuffer) {
+                continue;
+            }
+            DeclareImage(image, binding);
+        }
+        return binding;
+    }
+
+    void DeclareImage(const Image& image, u32& binding) {
+        const auto [dim, arrayed] = GetImageDim(image);
+        constexpr int depth = 0;
+        constexpr bool ms = false;
+        constexpr int sampled = 2; // This won't be accessed with a sampler
+        const auto format = image.is_atomic ? spv::ImageFormat::R32ui : spv::ImageFormat::Unknown;
+        const Id image_type = TypeImage(t_uint, dim, depth, arrayed, ms, sampled, format, {});
+        const Id pointer_type = TypePointer(spv::StorageClass::UniformConstant, image_type);
+        const Id id = OpVariable(pointer_type, spv::StorageClass::UniformConstant);
+        AddGlobalVariable(Name(id, fmt::format("image_{}", image.index)));
+
+        Decorate(id, spv::Decoration::Binding, binding++);
+        Decorate(id, spv::Decoration::DescriptorSet, DESCRIPTOR_SET);
+        if (image.is_read && !image.is_written) {
+            Decorate(id, spv::Decoration::NonWritable);
+        } else if (image.is_written && !image.is_read) {
+            Decorate(id, spv::Decoration::NonReadable);
+        }
+
+        images.emplace(image.index, StorageImage{image_type, id});
     }
 
     bool IsRenderTargetEnabled(u32 rt) const {
@@ -984,6 +1010,10 @@ private:
 
     bool IsOutputAttributeArray() const {
         return stage == ShaderType::TesselationControl;
+    }
+
+    bool IsAttributeEnabled(u32 location) const {
+        return stage != ShaderType::Vertex || specialization.enabled_attributes[location];
     }
 
     u32 GetNumInputVertices() const {
@@ -1201,16 +1231,20 @@ private:
                 UNIMPLEMENTED_MSG("Unmanaged FrontFacing element={}", element);
                 return {v_float_zero, Type::Float};
             default:
-                if (IsGenericAttribute(attribute)) {
-                    const u32 location = GetGenericAttributeLocation(attribute);
-                    const auto type_descriptor = GetAttributeType(location);
-                    const Type type = type_descriptor.type;
-                    const Id attribute_id = input_attributes.at(attribute);
-                    const std::vector elements = {element};
-                    const Id pointer = ArrayPass(type_descriptor.scalar, attribute_id, elements);
-                    return {OpLoad(GetTypeDefinition(type), pointer), type};
+                if (!IsGenericAttribute(attribute)) {
+                    break;
                 }
-                break;
+                const u32 location = GetGenericAttributeLocation(attribute);
+                if (!IsAttributeEnabled(location)) {
+                    // Disabled attributes (also known as constant attributes) always return zero.
+                    return {v_float_zero, Type::Float};
+                }
+                const auto type_descriptor = GetAttributeType(location);
+                const Type type = type_descriptor.type;
+                const Id attribute_id = input_attributes.at(attribute);
+                const std::vector elements = {element};
+                const Id pointer = ArrayPass(type_descriptor.scalar, attribute_id, elements);
+                return {OpLoad(GetTypeDefinition(type), pointer), type};
             }
             UNIMPLEMENTED_MSG("Unhandled input attribute: {}", static_cast<u32>(attribute));
             return {v_float_zero, Type::Float};
@@ -1246,7 +1280,7 @@ private:
                 } else {
                     UNREACHABLE_MSG("Unmanaged offset node type");
                 }
-                pointer = OpAccessChain(t_cbuf_float, buffer_id, Constant(t_uint, 0), buffer_index,
+                pointer = OpAccessChain(t_cbuf_float, buffer_id, v_uint_zero, buffer_index,
                                         buffer_element);
             }
             return {OpLoad(t_float, pointer), Type::Float};
@@ -1601,7 +1635,7 @@ private:
 
         const Id result = OpIAddCarry(TypeStruct({t_uint, t_uint}), op_a, op_b);
         const Id carry = OpCompositeExtract(t_uint, result, 1);
-        return {OpINotEqual(t_bool, carry, Constant(t_uint, 0)), Type::Bool};
+        return {OpINotEqual(t_bool, carry, v_uint_zero), Type::Bool};
     }
 
     Expression LogicalAssign(Operation operation) {
@@ -1664,7 +1698,7 @@ private:
         const auto& meta = std::get<MetaTexture>(operation.GetMeta());
         const u32 index = meta.sampler.index;
         if (meta.sampler.is_buffer) {
-            const auto& entry = texel_buffers.at(index);
+            const auto& entry = uniform_texels.at(index);
             return OpLoad(entry.image_type, entry.image);
         } else {
             const auto& entry = sampled_images.at(index);
@@ -1941,39 +1975,20 @@ private:
         return {};
     }
 
-    Expression AtomicImageAdd(Operation operation) {
-        UNIMPLEMENTED();
-        return {};
-    }
+    template <Id (Module::*func)(Id, Id, Id, Id, Id)>
+    Expression AtomicImage(Operation operation) {
+        const auto& meta{std::get<MetaImage>(operation.GetMeta())};
+        ASSERT(meta.values.size() == 1);
 
-    Expression AtomicImageMin(Operation operation) {
-        UNIMPLEMENTED();
-        return {};
-    }
+        const Id coordinate = GetCoordinates(operation, Type::Int);
+        const Id image = images.at(meta.image.index).image;
+        const Id sample = v_uint_zero;
+        const Id pointer = OpImageTexelPointer(t_image_uint, image, coordinate, sample);
 
-    Expression AtomicImageMax(Operation operation) {
-        UNIMPLEMENTED();
-        return {};
-    }
-
-    Expression AtomicImageAnd(Operation operation) {
-        UNIMPLEMENTED();
-        return {};
-    }
-
-    Expression AtomicImageOr(Operation operation) {
-        UNIMPLEMENTED();
-        return {};
-    }
-
-    Expression AtomicImageXor(Operation operation) {
-        UNIMPLEMENTED();
-        return {};
-    }
-
-    Expression AtomicImageExchange(Operation operation) {
-        UNIMPLEMENTED();
-        return {};
+        const Id scope = Constant(t_uint, static_cast<u32>(spv::Scope::Device));
+        const Id semantics = v_uint_zero;
+        const Id value = AsUint(Visit(meta.values[0]));
+        return {(this->*func)(t_uint, pointer, scope, semantics, value), Type::Uint};
     }
 
     template <Id (Module::*func)(Id, Id, Id, Id, Id)>
@@ -1988,7 +2003,7 @@ private:
             return {v_float_zero, Type::Float};
         }
         const Id scope = Constant(t_uint, static_cast<u32>(spv::Scope::Device));
-        const Id semantics = Constant(t_uint, 0);
+        const Id semantics = v_uint_zero;
         const Id value = AsUint(Visit(operation[1]));
 
         return {(this->*func)(t_uint, pointer, scope, semantics, value), Type::Uint};
@@ -2215,8 +2230,8 @@ private:
         return {};
     }
 
-    Expression MemoryBarrierGL(Operation) {
-        const auto scope = spv::Scope::Device;
+    template <spv::Scope scope>
+    Expression MemoryBarrier(Operation) {
         const auto semantics =
             spv::MemorySemanticsMask::AcquireRelease | spv::MemorySemanticsMask::UniformMemory |
             spv::MemorySemanticsMask::WorkgroupMemory |
@@ -2612,11 +2627,11 @@ private:
 
         &SPIRVDecompiler::ImageLoad,
         &SPIRVDecompiler::ImageStore,
-        &SPIRVDecompiler::AtomicImageAdd,
-        &SPIRVDecompiler::AtomicImageAnd,
-        &SPIRVDecompiler::AtomicImageOr,
-        &SPIRVDecompiler::AtomicImageXor,
-        &SPIRVDecompiler::AtomicImageExchange,
+        &SPIRVDecompiler::AtomicImage<&Module::OpAtomicIAdd>,
+        &SPIRVDecompiler::AtomicImage<&Module::OpAtomicAnd>,
+        &SPIRVDecompiler::AtomicImage<&Module::OpAtomicOr>,
+        &SPIRVDecompiler::AtomicImage<&Module::OpAtomicXor>,
+        &SPIRVDecompiler::AtomicImage<&Module::OpAtomicExchange>,
 
         &SPIRVDecompiler::Atomic<&Module::OpAtomicExchange>,
         &SPIRVDecompiler::Atomic<&Module::OpAtomicIAdd>,
@@ -2681,7 +2696,8 @@ private:
         &SPIRVDecompiler::ShuffleIndexed,
 
         &SPIRVDecompiler::Barrier,
-        &SPIRVDecompiler::MemoryBarrierGL,
+        &SPIRVDecompiler::MemoryBarrier<spv::Scope::Workgroup>,
+        &SPIRVDecompiler::MemoryBarrier<spv::Scope::Device>,
     };
     static_assert(operation_decompilers.size() == static_cast<std::size_t>(OperationCode::Amount));
 
@@ -2757,8 +2773,11 @@ private:
         Decorate(TypeStruct(t_gmem_array), spv::Decoration::Block), 0, spv::Decoration::Offset, 0);
     const Id t_gmem_ssbo = TypePointer(spv::StorageClass::StorageBuffer, t_gmem_struct);
 
+    const Id t_image_uint = TypePointer(spv::StorageClass::Image, t_uint);
+
     const Id v_float_zero = Constant(t_float, 0.0f);
     const Id v_float_one = Constant(t_float, 1.0f);
+    const Id v_uint_zero = Constant(t_uint, 0);
 
     // Nvidia uses these defaults for varyings (e.g. position and generic attributes)
     const Id v_varying_default =
@@ -2783,15 +2802,16 @@ private:
     std::unordered_map<u8, GenericVaryingDescription> output_attributes;
     std::map<u32, Id> constant_buffers;
     std::map<GlobalMemoryBase, Id> global_buffers;
-    std::map<u32, TexelBuffer> texel_buffers;
+    std::map<u32, TexelBuffer> uniform_texels;
     std::map<u32, SampledImage> sampled_images;
+    std::map<u32, TexelBuffer> storage_texels;
     std::map<u32, StorageImage> images;
 
+    std::array<Id, Maxwell::NumRenderTargets> frag_colors{};
     Id instance_index{};
     Id vertex_index{};
     Id base_instance{};
     Id base_vertex{};
-    std::array<Id, Maxwell::NumRenderTargets> frag_colors{};
     Id frag_depth{};
     Id frag_coord{};
     Id front_facing{};
@@ -3047,13 +3067,17 @@ ShaderEntries GenerateShaderEntries(const VideoCommon::Shader::ShaderIR& ir) {
     }
     for (const auto& sampler : ir.GetSamplers()) {
         if (sampler.is_buffer) {
-            entries.texel_buffers.emplace_back(sampler);
+            entries.uniform_texels.emplace_back(sampler);
         } else {
             entries.samplers.emplace_back(sampler);
         }
     }
     for (const auto& image : ir.GetImages()) {
-        entries.images.emplace_back(image);
+        if (image.type == Tegra::Shader::ImageType::TextureBuffer) {
+            entries.storage_texels.emplace_back(image);
+        } else {
+            entries.images.emplace_back(image);
+        }
     }
     for (const auto& attribute : ir.GetInputAttributes()) {
         if (IsGenericAttribute(attribute)) {

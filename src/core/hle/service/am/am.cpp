@@ -10,6 +10,7 @@
 #include "core/core.h"
 #include "core/file_sys/control_metadata.h"
 #include "core/file_sys/patch_manager.h"
+#include "core/file_sys/registered_cache.h"
 #include "core/file_sys/savedata_factory.h"
 #include "core/hle/ipc_helpers.h"
 #include "core/hle/kernel/kernel.h"
@@ -68,6 +69,7 @@ IWindowController::IWindowController(Core::System& system_)
     static const FunctionInfo functions[] = {
         {0, nullptr, "CreateWindow"},
         {1, &IWindowController::GetAppletResourceUserId, "GetAppletResourceUserId"},
+        {2, nullptr, "GetAppletResourceUserIdOfCallerApplet"},
         {10, &IWindowController::AcquireForegroundRights, "AcquireForegroundRights"},
         {11, nullptr, "ReleaseForegroundRights"},
         {12, nullptr, "RejectToChangeIntoBackground"},
@@ -189,8 +191,8 @@ IDisplayController::IDisplayController() : ServiceFramework("IDisplayController"
         {5, nullptr, "GetLastForegroundCaptureImageEx"},
         {6, nullptr, "GetLastApplicationCaptureImageEx"},
         {7, nullptr, "GetCallerAppletCaptureImageEx"},
-        {8, nullptr, "TakeScreenShotOfOwnLayer"},  // 2.0.0+
-        {9, nullptr, "CopyBetweenCaptureBuffers"}, // 5.0.0+
+        {8, nullptr, "TakeScreenShotOfOwnLayer"},
+        {9, nullptr, "CopyBetweenCaptureBuffers"},
         {10, nullptr, "AcquireLastApplicationCaptureBuffer"},
         {11, nullptr, "ReleaseLastApplicationCaptureBuffer"},
         {12, nullptr, "AcquireLastForegroundCaptureBuffer"},
@@ -200,17 +202,14 @@ IDisplayController::IDisplayController() : ServiceFramework("IDisplayController"
         {16, nullptr, "AcquireLastApplicationCaptureBufferEx"},
         {17, nullptr, "AcquireLastForegroundCaptureBufferEx"},
         {18, nullptr, "AcquireCallerAppletCaptureBufferEx"},
-        // 2.0.0+
         {20, nullptr, "ClearCaptureBuffer"},
         {21, nullptr, "ClearAppletTransitionBuffer"},
-        // 4.0.0+
         {22, nullptr, "AcquireLastApplicationCaptureSharedBuffer"},
         {23, nullptr, "ReleaseLastApplicationCaptureSharedBuffer"},
         {24, nullptr, "AcquireLastForegroundCaptureSharedBuffer"},
         {25, nullptr, "ReleaseLastForegroundCaptureSharedBuffer"},
         {26, nullptr, "AcquireCallerAppletCaptureSharedBuffer"},
         {27, nullptr, "ReleaseCallerAppletCaptureSharedBuffer"},
-        // 6.0.0+
         {28, nullptr, "TakeScreenShotOfOwnLayerEx"},
     };
     // clang-format on
@@ -225,7 +224,7 @@ IDebugFunctions::IDebugFunctions() : ServiceFramework{"IDebugFunctions"} {
     static const FunctionInfo functions[] = {
         {0, nullptr, "NotifyMessageToHomeMenuForDebug"},
         {1, nullptr, "OpenMainApplication"},
-        {10, nullptr, "EmulateButtonEvent"},
+        {10, nullptr, "PerformSystemButtonPressing"},
         {20, nullptr, "InvalidateTransitionLayer"},
         {30, nullptr, "RequestLaunchApplicationWithUserAndArgumentForDebug"},
         {40, nullptr, "GetAppletResourceUsageInfo"},
@@ -267,13 +266,13 @@ ISelfController::ISelfController(Core::System& system,
         {16, &ISelfController::SetOutOfFocusSuspendingEnabled, "SetOutOfFocusSuspendingEnabled"},
         {17, nullptr, "SetControllerFirmwareUpdateSection"},
         {18, nullptr, "SetRequiresCaptureButtonShortPressedMessage"},
-        {19, &ISelfController::SetScreenShotImageOrientation, "SetScreenShotImageOrientation"},
+        {19, &ISelfController::SetAlbumImageOrientation, "SetAlbumImageOrientation"},
         {20, nullptr, "SetDesirableKeyboardLayout"},
         {40, &ISelfController::CreateManagedDisplayLayer, "CreateManagedDisplayLayer"},
         {41, nullptr, "IsSystemBufferSharingEnabled"},
         {42, nullptr, "GetSystemSharedLayerHandle"},
         {43, nullptr, "GetSystemSharedBufferHandle"},
-        {44, nullptr, "CreateManagedDisplaySeparableLayer"},
+        {44, &ISelfController::CreateManagedDisplaySeparableLayer, "CreateManagedDisplaySeparableLayer"},
         {45, nullptr, "SetManagedDisplayLayerSeparationMode"},
         {50, &ISelfController::SetHandlesRequestToDisplay, "SetHandlesRequestToDisplay"},
         {51, nullptr, "ApproveToDisplay"},
@@ -443,7 +442,7 @@ void ISelfController::SetOutOfFocusSuspendingEnabled(Kernel::HLERequestContext& 
     rb.Push(RESULT_SUCCESS);
 }
 
-void ISelfController::SetScreenShotImageOrientation(Kernel::HLERequestContext& ctx) {
+void ISelfController::SetAlbumImageOrientation(Kernel::HLERequestContext& ctx) {
     LOG_WARNING(Service_AM, "(STUBBED) called");
 
     IPC::ResponseBuilder rb{ctx, 2};
@@ -455,6 +454,24 @@ void ISelfController::CreateManagedDisplayLayer(Kernel::HLERequestContext& ctx) 
 
     // TODO(Subv): Find out how AM determines the display to use, for now just
     // create the layer in the Default display.
+    const auto display_id = nvflinger->OpenDisplay("Default");
+    const auto layer_id = nvflinger->CreateLayer(*display_id);
+
+    IPC::ResponseBuilder rb{ctx, 4};
+    rb.Push(RESULT_SUCCESS);
+    rb.Push(*layer_id);
+}
+
+void ISelfController::CreateManagedDisplaySeparableLayer(Kernel::HLERequestContext& ctx) {
+    LOG_WARNING(Service_AM, "(STUBBED) called");
+
+    // TODO(Subv): Find out how AM determines the display to use, for now just
+    // create the layer in the Default display.
+    // This calls nn::vi::CreateRecordingLayer() which creates another layer.
+    // Currently we do not support more than 1 layer per display, output 1 layer id for now.
+    // Outputting 1 layer id instead of the expected 2 has not been observed to cause any adverse
+    // side effects.
+    // TODO: Support multiple layers
     const auto display_id = nvflinger->OpenDisplay("Default");
     const auto layer_id = nvflinger->CreateLayer(*display_id);
 
@@ -607,6 +624,7 @@ ICommonStateGetter::ICommonStateGetter(Core::System& system,
         {20, nullptr, "PushToGeneralChannel"},
         {30, nullptr, "GetHomeButtonReaderLockAccessor"},
         {31, nullptr, "GetReaderLockAccessorEx"},
+        {32, nullptr, "GetWriterLockAccessorEx"},
         {40, nullptr, "GetCradleFwVersion"},
         {50, &ICommonStateGetter::IsVrModeEnabled, "IsVrModeEnabled"},
         {51, &ICommonStateGetter::SetVrModeEnabled, "SetVrModeEnabled"},
@@ -731,14 +749,14 @@ void ICommonStateGetter::GetDefaultDisplayResolution(Kernel::HLERequestContext& 
 
     if (Settings::values.use_docked_mode) {
         rb.Push(static_cast<u32>(Service::VI::DisplayResolution::DockedWidth) *
-                static_cast<u32>(Settings::values.resolution_factor));
+                static_cast<u32>(Settings::values.resolution_factor.GetValue()));
         rb.Push(static_cast<u32>(Service::VI::DisplayResolution::DockedHeight) *
-                static_cast<u32>(Settings::values.resolution_factor));
+                static_cast<u32>(Settings::values.resolution_factor.GetValue()));
     } else {
         rb.Push(static_cast<u32>(Service::VI::DisplayResolution::UndockedWidth) *
-                static_cast<u32>(Settings::values.resolution_factor));
+                static_cast<u32>(Settings::values.resolution_factor.GetValue()));
         rb.Push(static_cast<u32>(Service::VI::DisplayResolution::UndockedHeight) *
-                static_cast<u32>(Settings::values.resolution_factor));
+                static_cast<u32>(Settings::values.resolution_factor.GetValue()));
     }
 }
 
@@ -842,7 +860,7 @@ public:
             {110, nullptr, "NeedsToExitProcess"},
             {120, nullptr, "GetLibraryAppletInfo"},
             {150, nullptr, "RequestForAppletToGetForeground"},
-            {160, nullptr, "GetIndirectLayerConsumerHandle"},
+            {160, &ILibraryAppletAccessor::GetIndirectLayerConsumerHandle, "GetIndirectLayerConsumerHandle"},
         };
         // clang-format on
 
@@ -959,6 +977,18 @@ private:
         IPC::ResponseBuilder rb{ctx, 2, 1};
         rb.Push(RESULT_SUCCESS);
         rb.PushCopyObjects(applet->GetBroker().GetInteractiveDataEvent());
+    }
+
+    void GetIndirectLayerConsumerHandle(Kernel::HLERequestContext& ctx) {
+        LOG_WARNING(Service_AM, "(STUBBED) called");
+
+        // We require a non-zero handle to be valid. Using 0xdeadbeef allows us to trace if this is
+        // actually used anywhere
+        constexpr u64 handle = 0xdeadbeef;
+
+        IPC::ResponseBuilder rb{ctx, 4};
+        rb.Push(RESULT_SUCCESS);
+        rb.Push(handle);
     }
 
     std::shared_ptr<Applets::Applet> applet;
@@ -1132,6 +1162,7 @@ IApplicationFunctions::IApplicationFunctions(Core::System& system_)
         {24, nullptr, "GetLaunchStorageInfoForDebug"},
         {25, &IApplicationFunctions::ExtendSaveData, "ExtendSaveData"},
         {26, &IApplicationFunctions::GetSaveDataSize, "GetSaveDataSize"},
+        {27, nullptr, "CreateCacheStorage"},
         {30, &IApplicationFunctions::BeginBlockingHomeButtonShortAndLongPressed, "BeginBlockingHomeButtonShortAndLongPressed"},
         {31, &IApplicationFunctions::EndBlockingHomeButtonShortAndLongPressed, "EndBlockingHomeButtonShortAndLongPressed"},
         {32, &IApplicationFunctions::BeginBlockingHomeButton, "BeginBlockingHomeButton"},
@@ -1157,6 +1188,8 @@ IApplicationFunctions::IApplicationFunctions(Core::System& system_)
         {120, nullptr, "ExecuteProgram"},
         {121, nullptr, "ClearUserChannel"},
         {122, nullptr, "UnpopToUserChannel"},
+        {123, nullptr, "GetPreviousProgramIndex"},
+        {124, nullptr, "EnableApplicationAllThreadDumpOnCrash"},
         {130, &IApplicationFunctions::GetGpuErrorDetectedSystemEvent, "GetGpuErrorDetectedSystemEvent"},
         {140, &IApplicationFunctions::GetFriendInvitationStorageChannelEvent, "GetFriendInvitationStorageChannelEvent"},
         {141, nullptr, "TryPopFromFriendInvitationStorageChannel"},
@@ -1339,14 +1372,25 @@ void IApplicationFunctions::GetDisplayVersion(Kernel::HLERequestContext& ctx) {
 
     std::array<u8, 0x10> version_string{};
 
-    FileSys::PatchManager pm{system.CurrentProcess()->GetTitleID()};
-    const auto res = pm.GetControlMetadata();
+    const auto res = [this] {
+        const auto title_id = system.CurrentProcess()->GetTitleID();
+
+        FileSys::PatchManager pm{title_id};
+        auto res = pm.GetControlMetadata();
+        if (res.first != nullptr) {
+            return res;
+        }
+
+        FileSys::PatchManager pm_update{FileSys::GetUpdateTitleID(title_id)};
+        return pm_update.GetControlMetadata();
+    }();
+
     if (res.first != nullptr) {
         const auto& version = res.first->GetVersionString();
         std::copy(version.begin(), version.end(), version_string.begin());
     } else {
-        constexpr u128 default_version = {1, 0};
-        std::memcpy(version_string.data(), default_version.data(), sizeof(u128));
+        constexpr char default_version[]{"1.0.0"};
+        std::memcpy(version_string.data(), default_version, sizeof(default_version));
     }
 
     IPC::ResponseBuilder rb{ctx, 6};
@@ -1363,7 +1407,19 @@ void IApplicationFunctions::GetDesiredLanguage(Kernel::HLERequestContext& ctx) {
     u32 supported_languages = 0;
     FileSys::PatchManager pm{system.CurrentProcess()->GetTitleID()};
 
-    const auto res = pm.GetControlMetadata();
+    const auto res = [this] {
+        const auto title_id = system.CurrentProcess()->GetTitleID();
+
+        FileSys::PatchManager pm{title_id};
+        auto res = pm.GetControlMetadata();
+        if (res.first != nullptr) {
+            return res;
+        }
+
+        FileSys::PatchManager pm_update{FileSys::GetUpdateTitleID(title_id)};
+        return pm_update.GetControlMetadata();
+    }();
+
     if (res.first != nullptr) {
         supported_languages = res.first->GetSupportedLanguages();
     }
