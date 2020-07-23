@@ -1,5 +1,8 @@
 #!/bin/bash -ex
 
+whoami
+id
+echo $USER
 chown -R $USER:$USER /yuzu
 cd /yuzu
 
