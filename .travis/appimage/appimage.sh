@@ -1,8 +1,8 @@
 #!/bin/bash -ex
 
-BUILDBIN=${PWD}/yuzu/build/bin
+BUILDBIN=${HOME}/build/bin
 
-cd ${PWD}/yuzu
+cd $HOME
 	curl -sLO "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
 	chmod a+x linuxdeployqt*.AppImage
 
