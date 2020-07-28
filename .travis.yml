@@ -13,10 +13,7 @@ matrix:
       install: 
        - docker pull quriouspixel/yuzu:latest
       script: 
-       - mkdir -p "$HOME/.ccache"
-       - docker run -u root -e ENABLE_COMPATIBILITY_REPORTING --env-file .travis/common/travis-ci.env -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:latest /bin/bash /yuzu/.travis/appimage/docker.sh
-       #- 
-       #- 
+       - "./.travis/appimage/build.sh"
     # after_success: "./.travis/appimage/appimage.sh"
       cache: ccache
     #- os: linux
