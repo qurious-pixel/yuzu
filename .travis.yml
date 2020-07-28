@@ -10,8 +10,14 @@ matrix:
         apt:
           packages:
             - p7zip-full
-      install: "./.travis/appimage/deps.sh"
-      script: "./.travis/appimage/build.sh"
+    #  install: "./.travis/appimage/deps.sh"
+      script: 
+    #  - "./.travis/appimage/build.sh"
+       - $(pwd)
+       - ls -al .
+       - mkdir -p /tmp/test
+       - chown -R 1027:1027 /tmp/test
+       - ls -al /tmp/test
     # after_success: "./.travis/appimage/appimage.sh"
       cache: ccache
     #- os: linux
