@@ -10,14 +10,13 @@ matrix:
         apt:
           packages:
             - p7zip-full
-    #  install: "./.travis/appimage/deps.sh"
+      install: 
+       - docker pull quriouspixel/yuzu:latest
       script: 
-    #  - "./.travis/appimage/build.sh"
-       - $(pwd)
-       - ls -al .
-       - mkdir -p /tmp/test
-       - chown -R 1027:1027 /tmp/test
-       - ls -al /tmp/test
+       - mkdir -p "$HOME/.ccache"
+       - docker run -e ENABLE_COMPATIBILITY_REPORTING --env-file .travis/common/travis-ci.env -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:latest /bin/bash 
+       - docker exec -u root yuzu_appimage chown -R 1027:1027 /yuzu
+       - ./.travis/appimage/docker.sh
     # after_success: "./.travis/appimage/appimage.sh"
       cache: ccache
     #- os: linux
