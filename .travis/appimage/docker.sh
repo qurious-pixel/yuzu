@@ -1,5 +1,10 @@
 #!/bin/bash -ex
 
+whoami
+chown -R 1027:1027 /yuzu
+su yuzu
+whoami
+
 cd /yuzu
 
 mkdir build && cd build
