@@ -11,8 +11,10 @@ matrix:
           packages:
             - p7zip-full
       install: "./.travis/appimage/deps.sh"
+      before_script: 
+      - docker-compose run --user='root' --entrypoint chown /yuzu -R 1027:1027 .
       script: "./.travis/appimage/build.sh"
-      after_success: "./.travis/appimage/appimage.sh"
+    # after_success: "./.travis/appimage/appimage.sh"
       cache: ccache
     #- os: linux
     # env: NAME="clang-format"
