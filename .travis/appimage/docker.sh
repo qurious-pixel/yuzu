@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-cd $HOME
+cd /yuzu
 
 mkdir build && cd build
 
@@ -10,7 +10,7 @@ cmake /yuzu -G Ninja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -D
 ninja
 
 
-#cat /home/yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
+cat /home/yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
 
 ccache -s
 
