@@ -4,10 +4,12 @@ BUILDBIN=/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
 LOG_FILE=$HOME/curl.log
 
-cd $HOME
+cd /tmp
 	curl -sLO "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
 	chmod a+x linuxdeployqt*.AppImage
+./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
 
+cd $HOME
 mkdir -p squashfs-root/usr/bin
 cp -P "$BUILDBIN"/yuzu $HOME/squashfs-root/usr/bin/
 source /opt/qt514/bin/qt514-env.sh
@@ -17,8 +19,10 @@ curl -sL https://github.com/darealshinji/AppImageKit-checkrt/releases/download/c
 curl -sL https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64 -o ./squashfs-root/runtime
 chmod a+x ./squashfs-root/runtime
 chmod a+x ./squashfs-root/AppRun
+cp /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /usr/lib/x86_64-linux-gnu/libssl.so.47
+cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /usr/lib/x86_64-linux-gnu/libcrypto.so.45
 
-	./linuxdeployqt-continuous-x86_64.AppImage squashfs-root/usr/bin/yuzu -appimage -unsupported-allow-new-glibc -no-copy-copyright-files -no-translations -bundle-non-qt-libs
+		/tmp/squashfs-root/AppRun $HOME/squashfs-root/usr/bin/yuzu -appimage -unsupported-allow-new-glibc -no-copy-copyright-files -no-translations -bundle-non-qt-libs
 
 mkdir $HOME/artifacts/
 mv yuzu-x86_64.AppImage $HOME/artifacts
