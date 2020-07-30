@@ -14,6 +14,6 @@ ninja
 #cat /yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
 
 cd /tmp
-curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/merge/.travis/appimage/appimage.sh"
+curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/appimage.sh"
 chmod a+x appimage.sh
 ./appimage.sh
