@@ -37,7 +37,7 @@ export PATH=$(readlink -f /tmp/squashfs-root/usr/bin/):$PATH
 
 mkdir $HOME/artifacts/
 mkdir -p /yuzu/artifacts/
-mv yuzu-x86_64.AppImage $HOME/artifacts
+mv yuzu-x86_64.AppImage* $HOME/artifacts
 cp -R $HOME/artifacts/ /yuzu/
 chmod -R 777 /yuzu/artifacts
 cd /yuzu/artifacts
