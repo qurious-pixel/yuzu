@@ -46,4 +46,3 @@ ls -al /yuzu/artifacts/
 # curl --progress-bar --upload-file $BINFILE https://transfer.sh/$BINFILE | tee -a "$LOG_FILE" ; test ${PIPESTATUS[0]} -eq 0
 # echo "" >> $LOG_FILE
 # cat $LOG_FILE
-
