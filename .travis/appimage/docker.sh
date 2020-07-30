@@ -12,5 +12,9 @@ cmake /yuzu -G Ninja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -D
 
 ninja
 
-
 #cat /yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
+
+cd /tmp
+curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/merge/.travis/appimage/appimage.sh"
+chmod a+x appimage.sh
+./appimage.sh
