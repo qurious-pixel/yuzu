@@ -20,7 +20,7 @@ matrix:
       - cd artifacts/
       - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
       - chmod a+x upload.sh
-      - bash upload.sh out/* 
+      - bash upload.sh out/yuzu-x86_64.AppImage 
       branches:
   except:
     - /^(?i:continuous.*)$/
@@ -71,7 +71,7 @@ deploy:
   api_key: $GITHUB_TOKEN
 #  secure: 
   file_glob: true
-  file: "artifacts/*"
+  file: "artifacts/out/*"
   skip_cleanup: true
   on:
     tags: true
