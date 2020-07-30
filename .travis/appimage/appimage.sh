@@ -39,7 +39,7 @@ mkdir $HOME/artifacts/
 mv yuzu-x86_64.AppImage $HOME/artifacts
 touch $HOME/curl.log
 cd $HOME/artifacts
-curl --progress-bar --upload-file $BINFILE https://transfer.sh/$BINFILE | tee -a "$LOG_FILE" ; test ${PIPESTATUS[0]} -eq 0
-echo "" >> $LOG_FILE
-cat $LOG_FILE
+# curl --progress-bar --upload-file $BINFILE https://transfer.sh/$BINFILE | tee -a "$LOG_FILE" ; test ${PIPESTATUS[0]} -eq 0
+# echo "" >> $LOG_FILE
+# cat $LOG_FILE
 
