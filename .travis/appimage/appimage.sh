@@ -38,8 +38,9 @@ export PATH=$(readlink -f /tmp/squashfs-root/usr/bin/):$PATH
 mkdir $HOME/artifacts/
 mkdir /yuzu/artifacts/
 mv yuzu-x86_64.AppImage $HOME/artifacts
-cp -R $/HOME/artifacts 
-cd $HOME/artifacts
+cp -R $HOME/artifacts /yuzu/artifacts
+cd /yuzu/artifacts
+ls -al .
 # touch $HOME/curl.log
 # curl --progress-bar --upload-file $BINFILE https://transfer.sh/$BINFILE | tee -a "$LOG_FILE" ; test ${PIPESTATUS[0]} -eq 0
 # echo "" >> $LOG_FILE
