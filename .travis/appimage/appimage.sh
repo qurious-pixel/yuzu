@@ -36,12 +36,12 @@ export PATH=$(readlink -f /tmp/squashfs-root/usr/bin/):$PATH
 /tmp/squashfs-root/usr/bin/appimagetool $HOME/squashfs-root
 
 mkdir $HOME/artifacts/
-mkdir -p /yuzu/artifacts/out
+mkdir -p /yuzu/artifacts/
 mv yuzu-x86_64.AppImage $HOME/artifacts
-cp -R $HOME/artifacts /yuzu/artifacts/out
+cp -R $HOME/artifacts/ /yuzu/artifacts/
 chmod -R 777 /yuzu/artifacts
 cd /yuzu/artifacts
-ls -al /yuzu/artifacts/out
+ls -al /yuzu/artifacts/
 # touch $HOME/curl.log
 # curl --progress-bar --upload-file $BINFILE https://transfer.sh/$BINFILE | tee -a "$LOG_FILE" ; test ${PIPESTATUS[0]} -eq 0
 # echo "" >> $LOG_FILE
