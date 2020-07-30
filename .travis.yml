@@ -16,10 +16,11 @@ matrix:
       script: 
        - "./.travis/appimage/build.sh"
       after_success:
-      - ls -lh artifacts/* 
+      - ls -lh artifacts/out/* 
+      - cd artifacts/
       - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
       - chmod a+x upload.sh
-      - bash upload.sh artifacts/* 
+      - bash upload.sh out/* 
       branches:
   except:
     - /^(?i:continuous.*)$/
