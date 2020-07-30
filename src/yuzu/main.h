@@ -10,6 +10,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QTranslator>
 
 #include "common/common_types.h"
 #include "core/core.h"
@@ -28,6 +29,7 @@ class MicroProfileDialog;
 class ProfilerWidget;
 class QLabel;
 class QPushButton;
+class QProgressDialog;
 class WaitTreeWidget;
 enum class GameListOpenTarget;
 class GameListPlaceholder;
@@ -45,6 +47,12 @@ class VfsFilesystem;
 enum class EmulatedDirectoryTarget {
     NAND,
     SDMC,
+};
+
+enum class InstallResult {
+    Success,
+    Overwrite,
+    Failure,
 };
 
 enum class ReinitializeKeyBehavior {
@@ -101,6 +109,8 @@ signals:
 
     // Signal that tells widgets to update icons to use the current theme
     void UpdateThemedIcons();
+
+    void UpdateInstallProgress();
 
     void ErrorDisplayFinished();
 
@@ -181,6 +191,9 @@ private slots:
     void OnPauseGame();
     void OnStopGame();
     void OnMenuReportCompatibility();
+    void OnOpenModsPage();
+    void OnOpenQuickstartGuide();
+    void OnOpenFAQ();
     /// Called whenever a user selects a game in the game list widget.
     void OnGameListLoadFile(QString game_path);
     void OnGameListOpenFolder(GameListOpenTarget target, const std::string& game_path);
@@ -195,6 +208,7 @@ private slots:
     void OnGameListOpenPerGameProperties(const std::string& file);
     void OnMenuLoadFile();
     void OnMenuLoadFolder();
+    void IncrementInstallProgress();
     void OnMenuInstallToNAND();
     void OnMenuRecentFile();
     void OnConfigure();
@@ -212,13 +226,20 @@ private slots:
     void OnCaptureScreenshot();
     void OnCoreError(Core::System::ResultStatus, std::string);
     void OnReinitializeKeys(ReinitializeKeyBehavior behavior);
+    void OnLanguageChanged(const QString& locale);
 
 private:
     std::optional<u64> SelectRomFSDumpTarget(const FileSys::ContentProvider&, u64 program_id);
-    void UpdateWindowTitle(const QString& title_name = {});
+    InstallResult InstallNSPXCI(const QString& filename);
+    InstallResult InstallNCA(const QString& filename);
+    void UpdateWindowTitle(const std::string& title_name = {},
+                           const std::string& title_version = {});
     void UpdateStatusBar();
+    void UpdateStatusButtons();
     void HideMouseCursor();
     void ShowMouseCursor();
+    void OpenURL(const QUrl& url);
+    void LoadTranslation();
 
     Ui::MainWindow ui;
 
@@ -230,10 +251,12 @@ private:
 
     // Status bar elements
     QLabel* message_label = nullptr;
+    QLabel* shader_building_label = nullptr;
     QLabel* emu_speed_label = nullptr;
     QLabel* game_fps_label = nullptr;
     QLabel* emu_frametime_label = nullptr;
     QPushButton* async_status_button = nullptr;
+    QPushButton* multicore_status_button = nullptr;
     QPushButton* renderer_status_button = nullptr;
     QPushButton* dock_status_button = nullptr;
     QTimer status_bar_update_timer;
@@ -264,6 +287,11 @@ private:
     QStringList default_theme_paths;
 
     HotkeyRegistry hotkey_registry;
+
+    QTranslator translator;
+
+    // Install progress dialog
+    QProgressDialog* install_progress;
 
 protected:
     void dropEvent(QDropEvent* event) override;

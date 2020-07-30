@@ -95,17 +95,18 @@ VkImageViewType GetImageViewType(SurfaceTarget target) {
 vk::Buffer CreateBuffer(const VKDevice& device, const SurfaceParams& params,
                         std::size_t host_memory_size) {
     // TODO(Rodrigo): Move texture buffer creation to the buffer cache
-    VkBufferCreateInfo ci;
-    ci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    ci.pNext = nullptr;
-    ci.flags = 0;
-    ci.size = static_cast<VkDeviceSize>(host_memory_size);
-    ci.usage = VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
-               VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-    ci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    ci.queueFamilyIndexCount = 0;
-    ci.pQueueFamilyIndices = nullptr;
-    return device.GetLogical().CreateBuffer(ci);
+    return device.GetLogical().CreateBuffer({
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .size = static_cast<VkDeviceSize>(host_memory_size),
+        .usage = VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT |
+                 VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
+                 VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+        .queueFamilyIndexCount = 0,
+        .pQueueFamilyIndices = nullptr,
+    });
 }
 
 VkBufferViewCreateInfo GenerateBufferViewCreateInfo(const VKDevice& device,
@@ -113,15 +114,16 @@ VkBufferViewCreateInfo GenerateBufferViewCreateInfo(const VKDevice& device,
                                                     std::size_t host_memory_size) {
     ASSERT(params.IsBuffer());
 
-    VkBufferViewCreateInfo ci;
-    ci.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
-    ci.pNext = nullptr;
-    ci.flags = 0;
-    ci.buffer = buffer;
-    ci.format = MaxwellToVK::SurfaceFormat(device, FormatType::Buffer, params.pixel_format).format;
-    ci.offset = 0;
-    ci.range = static_cast<VkDeviceSize>(host_memory_size);
-    return ci;
+    return {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .buffer = buffer,
+        .format =
+            MaxwellToVK::SurfaceFormat(device, FormatType::Buffer, params.pixel_format).format,
+        .offset = 0,
+        .range = static_cast<VkDeviceSize>(host_memory_size),
+    };
 }
 
 VkImageCreateInfo GenerateImageCreateInfo(const VKDevice& device, const SurfaceParams& params) {
@@ -130,23 +132,23 @@ VkImageCreateInfo GenerateImageCreateInfo(const VKDevice& device, const SurfaceP
     const auto [format, attachable, storage] =
         MaxwellToVK::SurfaceFormat(device, FormatType::Optimal, params.pixel_format);
 
-    VkImageCreateInfo ci;
-    ci.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    ci.pNext = nullptr;
-    ci.flags = 0;
-    ci.imageType = SurfaceTargetToImage(params.target);
-    ci.format = format;
-    ci.mipLevels = params.num_levels;
-    ci.arrayLayers = static_cast<u32>(params.GetNumLayers());
-    ci.samples = VK_SAMPLE_COUNT_1_BIT;
-    ci.tiling = VK_IMAGE_TILING_OPTIMAL;
-    ci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    ci.queueFamilyIndexCount = 0;
-    ci.pQueueFamilyIndices = nullptr;
-    ci.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-
-    ci.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
-               VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+    VkImageCreateInfo ci{
+        .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .imageType = SurfaceTargetToImage(params.target),
+        .format = format,
+        .mipLevels = params.num_levels,
+        .arrayLayers = static_cast<u32>(params.GetNumLayers()),
+        .samples = VK_SAMPLE_COUNT_1_BIT,
+        .tiling = VK_IMAGE_TILING_OPTIMAL,
+        .usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+                 VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+        .queueFamilyIndexCount = 0,
+        .pQueueFamilyIndices = nullptr,
+        .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+    };
     if (attachable) {
         ci.usage |= params.IsPixelFormatZeta() ? VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
                                                : VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
@@ -167,6 +169,7 @@ VkImageCreateInfo GenerateImageCreateInfo(const VKDevice& device, const SurfaceP
         ci.extent = {params.width, params.height, 1};
         break;
     case SurfaceTarget::Texture3D:
+        ci.flags |= VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT;
         ci.extent = {params.width, params.height, params.depth};
         break;
     case SurfaceTarget::TextureBuffer:
@@ -174,6 +177,12 @@ VkImageCreateInfo GenerateImageCreateInfo(const VKDevice& device, const SurfaceP
     }
 
     return ci;
+}
+
+u32 EncodeSwizzle(Tegra::Texture::SwizzleSource x_source, Tegra::Texture::SwizzleSource y_source,
+                  Tegra::Texture::SwizzleSource z_source, Tegra::Texture::SwizzleSource w_source) {
+    return (static_cast<u32>(x_source) << 24) | (static_cast<u32>(y_source) << 16) |
+           (static_cast<u32>(z_source) << 8) | static_cast<u32>(w_source);
 }
 
 } // Anonymous namespace
@@ -203,9 +212,11 @@ CachedSurface::CachedSurface(Core::System& system, const VKDevice& device,
     }
 
     // TODO(Rodrigo): Move this to a virtual function.
-    main_view = CreateViewInner(
-        ViewParams(params.target, 0, static_cast<u32>(params.GetNumLayers()), 0, params.num_levels),
-        true);
+    u32 num_layers = 1;
+    if (params.is_layered || params.target == SurfaceTarget::Texture3D) {
+        num_layers = params.depth;
+    }
+    main_view = CreateView(ViewParams(params.target, 0, num_layers, 0, params.num_levels));
 }
 
 CachedSurface::~CachedSurface() = default;
@@ -224,7 +235,7 @@ void CachedSurface::UploadTexture(const std::vector<u8>& staging_buffer) {
 void CachedSurface::DownloadTexture(std::vector<u8>& staging_buffer) {
     UNIMPLEMENTED_IF(params.IsBuffer());
 
-    if (params.pixel_format == VideoCore::Surface::PixelFormat::A1B5G5R5U) {
+    if (params.pixel_format == VideoCore::Surface::PixelFormat::A1B5G5R5_UNORM) {
         LOG_WARNING(Render_Vulkan, "A1B5G5R5 flushing is stubbed");
     }
 
@@ -253,12 +264,8 @@ void CachedSurface::DecorateSurfaceName() {
 }
 
 View CachedSurface::CreateView(const ViewParams& params) {
-    return CreateViewInner(params, false);
-}
-
-View CachedSurface::CreateViewInner(const ViewParams& params, bool is_proxy) {
     // TODO(Rodrigo): Add name decorations
-    return views[params] = std::make_shared<CachedSurfaceView>(device, *this, params, is_proxy);
+    return views[params] = std::make_shared<CachedSurfaceView>(device, *this, params);
 }
 
 void CachedSurface::UploadBuffer(const std::vector<u8>& staging_buffer) {
@@ -276,12 +283,10 @@ void CachedSurface::UploadBuffer(const std::vector<u8>& staging_buffer) {
         VkBufferMemoryBarrier barrier;
         barrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
         barrier.pNext = nullptr;
-        barrier.srcAccessMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
-        barrier.dstAccessMask = VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
-        barrier.srcQueueFamilyIndex = VK_ACCESS_TRANSFER_WRITE_BIT;
-        barrier.dstQueueFamilyIndex = VK_ACCESS_SHADER_READ_BIT;
-        barrier.srcQueueFamilyIndex = 0;
-        barrier.dstQueueFamilyIndex = 0;
+        barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // They'll be ignored anyway
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.buffer = dst_buffer;
         barrier.offset = 0;
         barrier.size = size;
@@ -318,22 +323,25 @@ void CachedSurface::UploadImage(const std::vector<u8>& staging_buffer) {
 }
 
 VkBufferImageCopy CachedSurface::GetBufferImageCopy(u32 level) const {
-    VkBufferImageCopy copy;
-    copy.bufferOffset = params.GetHostMipmapLevelOffset(level, is_converted);
-    copy.bufferRowLength = 0;
-    copy.bufferImageHeight = 0;
-    copy.imageSubresource.aspectMask = image->GetAspectMask();
-    copy.imageSubresource.mipLevel = level;
-    copy.imageSubresource.baseArrayLayer = 0;
-    copy.imageSubresource.layerCount = static_cast<u32>(params.GetNumLayers());
-    copy.imageOffset.x = 0;
-    copy.imageOffset.y = 0;
-    copy.imageOffset.z = 0;
-    copy.imageExtent.width = params.GetMipWidth(level);
-    copy.imageExtent.height = params.GetMipHeight(level);
-    copy.imageExtent.depth =
-        params.target == SurfaceTarget::Texture3D ? params.GetMipDepth(level) : 1;
-    return copy;
+    return {
+        .bufferOffset = params.GetHostMipmapLevelOffset(level, is_converted),
+        .bufferRowLength = 0,
+        .bufferImageHeight = 0,
+        .imageSubresource =
+            {
+                .aspectMask = image->GetAspectMask(),
+                .mipLevel = level,
+                .baseArrayLayer = 0,
+                .layerCount = static_cast<u32>(params.GetNumLayers()),
+            },
+        .imageOffset = {.x = 0, .y = 0, .z = 0},
+        .imageExtent =
+            {
+                .width = params.GetMipWidth(level),
+                .height = params.GetMipHeight(level),
+                .depth = params.target == SurfaceTarget::Texture3D ? params.GetMipDepth(level) : 1U,
+            },
+    };
 }
 
 VkImageSubresourceRange CachedSurface::GetImageSubresourceRange() const {
@@ -342,38 +350,44 @@ VkImageSubresourceRange CachedSurface::GetImageSubresourceRange() const {
 }
 
 CachedSurfaceView::CachedSurfaceView(const VKDevice& device, CachedSurface& surface,
-                                     const ViewParams& params, bool is_proxy)
+                                     const ViewParams& params)
     : VideoCommon::ViewBase{params}, params{surface.GetSurfaceParams()},
       image{surface.GetImageHandle()}, buffer_view{surface.GetBufferViewHandle()},
       aspect_mask{surface.GetAspectMask()}, device{device}, surface{surface},
-      base_layer{params.base_layer}, num_layers{params.num_layers}, base_level{params.base_level},
-      num_levels{params.num_levels}, image_view_type{image ? GetImageViewType(params.target)
-                                                           : VK_IMAGE_VIEW_TYPE_1D} {}
+      base_level{params.base_level}, num_levels{params.num_levels},
+      image_view_type{image ? GetImageViewType(params.target) : VK_IMAGE_VIEW_TYPE_1D} {
+    if (image_view_type == VK_IMAGE_VIEW_TYPE_3D) {
+        base_layer = 0;
+        num_layers = 1;
+        base_slice = params.base_layer;
+        num_slices = params.num_layers;
+    } else {
+        base_layer = params.base_layer;
+        num_layers = params.num_layers;
+    }
+}
 
 CachedSurfaceView::~CachedSurfaceView() = default;
 
-VkImageView CachedSurfaceView::GetHandle(SwizzleSource x_source, SwizzleSource y_source,
-                                         SwizzleSource z_source, SwizzleSource w_source) {
-    const u32 swizzle = EncodeSwizzle(x_source, y_source, z_source, w_source);
-    if (last_image_view && last_swizzle == swizzle) {
+VkImageView CachedSurfaceView::GetImageView(SwizzleSource x_source, SwizzleSource y_source,
+                                            SwizzleSource z_source, SwizzleSource w_source) {
+    const u32 new_swizzle = EncodeSwizzle(x_source, y_source, z_source, w_source);
+    if (last_image_view && last_swizzle == new_swizzle) {
         return last_image_view;
     }
-    last_swizzle = swizzle;
+    last_swizzle = new_swizzle;
 
-    const auto [entry, is_cache_miss] = view_cache.try_emplace(swizzle);
+    const auto [entry, is_cache_miss] = view_cache.try_emplace(new_swizzle);
     auto& image_view = entry->second;
     if (!is_cache_miss) {
         return last_image_view = *image_view;
     }
 
-    auto swizzle_x = MaxwellToVK::SwizzleSource(x_source);
-    auto swizzle_y = MaxwellToVK::SwizzleSource(y_source);
-    auto swizzle_z = MaxwellToVK::SwizzleSource(z_source);
-    auto swizzle_w = MaxwellToVK::SwizzleSource(w_source);
-
-    if (params.pixel_format == VideoCore::Surface::PixelFormat::A1B5G5R5U) {
+    std::array swizzle{MaxwellToVK::SwizzleSource(x_source), MaxwellToVK::SwizzleSource(y_source),
+                       MaxwellToVK::SwizzleSource(z_source), MaxwellToVK::SwizzleSource(w_source)};
+    if (params.pixel_format == VideoCore::Surface::PixelFormat::A1B5G5R5_UNORM) {
         // A1B5G5R5 is implemented as A1R5G5B5, we have to change the swizzle here.
-        std::swap(swizzle_x, swizzle_z);
+        std::swap(swizzle[0], swizzle[2]);
     }
 
     // Games can sample depth or stencil values on textures. This is decided by the swizzle value on
@@ -383,11 +397,11 @@ VkImageView CachedSurfaceView::GetHandle(SwizzleSource x_source, SwizzleSource y
         UNIMPLEMENTED_IF(x_source != SwizzleSource::R && x_source != SwizzleSource::G);
         const bool is_first = x_source == SwizzleSource::R;
         switch (params.pixel_format) {
-        case VideoCore::Surface::PixelFormat::Z24S8:
-        case VideoCore::Surface::PixelFormat::Z32FS8:
+        case VideoCore::Surface::PixelFormat::D24_UNORM_S8_UINT:
+        case VideoCore::Surface::PixelFormat::D32_FLOAT_S8_UINT:
             aspect = is_first ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_STENCIL_BIT;
             break;
-        case VideoCore::Surface::PixelFormat::S8Z24:
+        case VideoCore::Surface::PixelFormat::S8_UINT_D24_UNORM:
             aspect = is_first ? VK_IMAGE_ASPECT_STENCIL_BIT : VK_IMAGE_ASPECT_DEPTH_BIT;
             break;
         default:
@@ -395,29 +409,81 @@ VkImageView CachedSurfaceView::GetHandle(SwizzleSource x_source, SwizzleSource y
             UNIMPLEMENTED();
         }
 
-        // Vulkan doesn't seem to understand swizzling of a depth stencil image, use identity
-        swizzle_x = VK_COMPONENT_SWIZZLE_R;
-        swizzle_y = VK_COMPONENT_SWIZZLE_G;
-        swizzle_z = VK_COMPONENT_SWIZZLE_B;
-        swizzle_w = VK_COMPONENT_SWIZZLE_A;
+        // Make sure we sample the first component
+        std::transform(
+            swizzle.begin(), swizzle.end(), swizzle.begin(), [](VkComponentSwizzle component) {
+                return component == VK_COMPONENT_SWIZZLE_G ? VK_COMPONENT_SWIZZLE_R : component;
+            });
     }
 
-    VkImageViewCreateInfo ci;
-    ci.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    ci.pNext = nullptr;
-    ci.flags = 0;
-    ci.image = surface.GetImageHandle();
-    ci.viewType = image_view_type;
-    ci.format = surface.GetImage().GetFormat();
-    ci.components = {swizzle_x, swizzle_y, swizzle_z, swizzle_w};
-    ci.subresourceRange.aspectMask = aspect;
-    ci.subresourceRange.baseMipLevel = base_level;
-    ci.subresourceRange.levelCount = num_levels;
-    ci.subresourceRange.baseArrayLayer = base_layer;
-    ci.subresourceRange.layerCount = num_layers;
-    image_view = device.GetLogical().CreateImageView(ci);
+    if (image_view_type == VK_IMAGE_VIEW_TYPE_3D) {
+        ASSERT(base_slice == 0);
+        ASSERT(num_slices == params.depth);
+    }
+
+    image_view = device.GetLogical().CreateImageView({
+        .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .image = surface.GetImageHandle(),
+        .viewType = image_view_type,
+        .format = surface.GetImage().GetFormat(),
+        .components =
+            {
+                .r = swizzle[0],
+                .g = swizzle[1],
+                .b = swizzle[2],
+                .a = swizzle[3],
+            },
+        .subresourceRange =
+            {
+                .aspectMask = aspect,
+                .baseMipLevel = base_level,
+                .levelCount = num_levels,
+                .baseArrayLayer = base_layer,
+                .layerCount = num_layers,
+            },
+    });
 
     return last_image_view = *image_view;
+}
+
+VkImageView CachedSurfaceView::GetAttachment() {
+    if (render_target) {
+        return *render_target;
+    }
+
+    VkImageViewCreateInfo ci{
+        .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .image = surface.GetImageHandle(),
+        .format = surface.GetImage().GetFormat(),
+        .components =
+            {
+                .r = VK_COMPONENT_SWIZZLE_IDENTITY,
+                .g = VK_COMPONENT_SWIZZLE_IDENTITY,
+                .b = VK_COMPONENT_SWIZZLE_IDENTITY,
+                .a = VK_COMPONENT_SWIZZLE_IDENTITY,
+            },
+        .subresourceRange =
+            {
+                .aspectMask = aspect_mask,
+                .baseMipLevel = base_level,
+                .levelCount = num_levels,
+            },
+    };
+    if (image_view_type == VK_IMAGE_VIEW_TYPE_3D) {
+        ci.viewType = num_slices > 1 ? VK_IMAGE_VIEW_TYPE_2D_ARRAY : VK_IMAGE_VIEW_TYPE_2D;
+        ci.subresourceRange.baseArrayLayer = base_slice;
+        ci.subresourceRange.layerCount = num_slices;
+    } else {
+        ci.viewType = image_view_type;
+        ci.subresourceRange.baseArrayLayer = base_layer;
+        ci.subresourceRange.layerCount = num_layers;
+    }
+    render_target = device.GetLogical().CreateImageView(ci);
+    return *render_target;
 }
 
 VKTextureCache::VKTextureCache(Core::System& system, VideoCore::RasterizerInterface& rasterizer,
@@ -459,24 +525,40 @@ void VKTextureCache::ImageCopy(Surface& src_surface, Surface& dst_surface,
                             VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_WRITE_BIT,
                             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-    VkImageCopy copy;
-    copy.srcSubresource.aspectMask = src_surface->GetAspectMask();
-    copy.srcSubresource.mipLevel = copy_params.source_level;
-    copy.srcSubresource.baseArrayLayer = copy_params.source_z;
-    copy.srcSubresource.layerCount = num_layers;
-    copy.srcOffset.x = copy_params.source_x;
-    copy.srcOffset.y = copy_params.source_y;
-    copy.srcOffset.z = 0;
-    copy.dstSubresource.aspectMask = dst_surface->GetAspectMask();
-    copy.dstSubresource.mipLevel = copy_params.dest_level;
-    copy.dstSubresource.baseArrayLayer = dst_base_layer;
-    copy.dstSubresource.layerCount = num_layers;
-    copy.dstOffset.x = copy_params.dest_x;
-    copy.dstOffset.y = copy_params.dest_y;
-    copy.dstOffset.z = dst_offset_z;
-    copy.extent.width = copy_params.width;
-    copy.extent.height = copy_params.height;
-    copy.extent.depth = extent_z;
+    const VkImageCopy copy{
+        .srcSubresource =
+            {
+                .aspectMask = src_surface->GetAspectMask(),
+                .mipLevel = copy_params.source_level,
+                .baseArrayLayer = copy_params.source_z,
+                .layerCount = num_layers,
+            },
+        .srcOffset =
+            {
+                .x = static_cast<s32>(copy_params.source_x),
+                .y = static_cast<s32>(copy_params.source_y),
+                .z = 0,
+            },
+        .dstSubresource =
+            {
+                .aspectMask = dst_surface->GetAspectMask(),
+                .mipLevel = copy_params.dest_level,
+                .baseArrayLayer = dst_base_layer,
+                .layerCount = num_layers,
+            },
+        .dstOffset =
+            {
+                .x = static_cast<s32>(copy_params.dest_x),
+                .y = static_cast<s32>(copy_params.dest_y),
+                .z = static_cast<s32>(dst_offset_z),
+            },
+        .extent =
+            {
+                .width = copy_params.width,
+                .height = copy_params.height,
+                .depth = extent_z,
+            },
+    };
 
     const VkImage src_image = src_surface->GetImageHandle();
     const VkImage dst_image = dst_surface->GetImageHandle();

@@ -120,6 +120,9 @@ std::optional<std::pair<u32, u32>> SurfaceBaseImpl::GetLayerMipmap(
     }
     const auto relative_address{static_cast<GPUVAddr>(candidate_gpu_addr - gpu_addr)};
     const auto layer{static_cast<u32>(relative_address / layer_size)};
+    if (layer >= params.depth) {
+        return {};
+    }
     const GPUVAddr mipmap_address = relative_address - layer_size * layer;
     const auto mipmap_it =
         Common::BinaryFind(mipmap_offsets.begin(), mipmap_offsets.end(), mipmap_address);
@@ -225,7 +228,7 @@ void SurfaceBaseImpl::LoadBuffer(Tegra::MemoryManager& memory_manager,
         }
     }
 
-    if (!is_converted && params.pixel_format != PixelFormat::S8Z24) {
+    if (!is_converted && params.pixel_format != PixelFormat::S8_UINT_D24_UNORM) {
         return;
     }
 
@@ -248,12 +251,11 @@ void SurfaceBaseImpl::FlushBuffer(Tegra::MemoryManager& memory_manager,
 
     // Use an extra temporal buffer
     auto& tmp_buffer = staging_cache.GetBuffer(1);
-    // Special case for 3D Texture Segments
-    const bool must_read_current_data =
-        params.block_depth > 0 && params.target == VideoCore::Surface::SurfaceTarget::Texture2D;
     tmp_buffer.resize(guest_memory_size);
     host_ptr = tmp_buffer.data();
-    if (must_read_current_data) {
+
+    if (params.target == SurfaceTarget::Texture3D) {
+        // Special case for 3D texture segments
         memory_manager.ReadBlockUnsafe(gpu_addr, host_ptr, guest_memory_size);
     }
 

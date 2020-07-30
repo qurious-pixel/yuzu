@@ -1,19 +1,27 @@
 language: cpp
+cache: ccache
 matrix:
   include:
     - os: linux
       env: NAME="linux appimage"
       sudo: required
-      dist: bionic
+      dist: trusty
       services: docker
       addons:
         apt:
           packages:
             - p7zip-full
-      install: "./.travis/appimage/deps.sh"
-      script: "./.travis/appimage/build.sh"
-      after_success: "./.travis/appimage/appimage.sh"
-      cache: ccache
+      install: 
+       - docker pull quriouspixel/yuzu:latest
+      script: 
+       - "./.travis/appimage/build.sh"
+      after_success:
+      - ls -lh artifacts/* 
+      - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+      - bash upload.sh artifacts/* 
+      branches:
+  except:
+    - /^(?i:continuous.*)$/
     #- os: linux
     # env: NAME="clang-format"
     #  sudo: required
@@ -59,7 +67,7 @@ matrix:
 deploy:
   provider: releases
   api_key:
-    secure: $GITHUB_OAUTH_TOKEN
+    secure: $GITHUB_TOKEN
   file_glob: true
   file: "artifacts/*"
   skip_cleanup: true

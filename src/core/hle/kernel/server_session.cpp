@@ -17,6 +17,7 @@
 #include "core/hle/kernel/hle_ipc.h"
 #include "core/hle/kernel/kernel.h"
 #include "core/hle/kernel/process.h"
+#include "core/hle/kernel/scheduler.h"
 #include "core/hle/kernel/server_session.h"
 #include "core/hle/kernel/session.h"
 #include "core/hle/kernel/thread.h"
@@ -33,7 +34,7 @@ ResultVal<std::shared_ptr<ServerSession>> ServerSession::Create(KernelCore& kern
     std::shared_ptr<ServerSession> session{std::make_shared<ServerSession>(kernel)};
 
     session->request_event = Core::Timing::CreateEvent(
-        name, [session](u64 userdata, s64 cycles_late) { session->CompleteSyncRequest(); });
+        name, [session](u64, std::chrono::nanoseconds) { session->CompleteSyncRequest(); });
     session->name = std::move(name);
     session->parent = std::move(parent);
 
@@ -168,9 +169,12 @@ ResultCode ServerSession::CompleteSyncRequest() {
     }
 
     // Some service requests require the thread to block
-    if (!context.IsThreadWaiting()) {
-        context.GetThread().ResumeFromWait();
-        context.GetThread().SetWaitSynchronizationResult(result);
+    {
+        SchedulerLock lock(kernel);
+        if (!context.IsThreadWaiting()) {
+            context.GetThread().ResumeFromWait();
+            context.GetThread().SetSynchronizationResults(nullptr, result);
+        }
     }
 
     request_queue.Pop();
@@ -180,8 +184,10 @@ ResultCode ServerSession::CompleteSyncRequest() {
 
 ResultCode ServerSession::HandleSyncRequest(std::shared_ptr<Thread> thread,
                                             Core::Memory::Memory& memory) {
-    Core::System::GetInstance().CoreTiming().ScheduleEvent(20000, request_event, {});
-    return QueueSyncRequest(std::move(thread), memory);
+    const ResultCode result = QueueSyncRequest(std::move(thread), memory);
+    const auto delay = std::chrono::nanoseconds{kernel.IsMulticore() ? 0 : 20000};
+    Core::System::GetInstance().CoreTiming().ScheduleEvent(delay, request_event, {});
+    return result;
 }
 
 } // namespace Kernel

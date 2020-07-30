@@ -511,6 +511,7 @@ private:
         LOG_DEBUG(Service_VI, "called. id=0x{:08X} transaction={:X}, flags=0x{:08X}", id,
                   static_cast<u32>(transaction), flags);
 
+        nv_flinger->Lock();
         auto& buffer_queue = nv_flinger->FindBufferQueue(id);
 
         switch (transaction) {
@@ -518,9 +519,9 @@ private:
             IGBPConnectRequestParcel request{ctx.ReadBuffer()};
             IGBPConnectResponseParcel response{
                 static_cast<u32>(static_cast<u32>(DisplayResolution::UndockedWidth) *
-                                 Settings::values.resolution_factor),
+                                 Settings::values.resolution_factor.GetValue()),
                 static_cast<u32>(static_cast<u32>(DisplayResolution::UndockedHeight) *
-                                 Settings::values.resolution_factor)};
+                                 Settings::values.resolution_factor.GetValue())};
             ctx.WriteBuffer(response.Serialize());
             break;
         }
@@ -550,6 +551,7 @@ private:
                     [=](std::shared_ptr<Kernel::Thread> thread, Kernel::HLERequestContext& ctx,
                         Kernel::ThreadWakeupReason reason) {
                         // Repeat TransactParcel DequeueBuffer when a buffer is available
+                        nv_flinger->Lock();
                         auto& buffer_queue = nv_flinger->FindBufferQueue(id);
                         auto result = buffer_queue.DequeueBuffer(width, height);
                         ASSERT_MSG(result != std::nullopt, "Could not dequeue buffer.");
@@ -698,6 +700,7 @@ public:
             {3215, nullptr, "SetDisplayGamma"},
             {3216, nullptr, "GetDisplayCmuLuma"},
             {3217, nullptr, "SetDisplayCmuLuma"},
+            {6013, nullptr, "GetLayerPresentationSubmissionTimestamps"},
             {8225, nullptr, "GetSharedBufferMemoryHandleId"},
             {8250, nullptr, "OpenSharedLayer"},
             {8251, nullptr, "CloseSharedLayer"},
@@ -746,14 +749,14 @@ private:
 
         if (Settings::values.use_docked_mode) {
             rb.Push(static_cast<u32>(Service::VI::DisplayResolution::DockedWidth) *
-                    static_cast<u32>(Settings::values.resolution_factor));
+                    static_cast<u32>(Settings::values.resolution_factor.GetValue()));
             rb.Push(static_cast<u32>(Service::VI::DisplayResolution::DockedHeight) *
-                    static_cast<u32>(Settings::values.resolution_factor));
+                    static_cast<u32>(Settings::values.resolution_factor.GetValue()));
         } else {
             rb.Push(static_cast<u32>(Service::VI::DisplayResolution::UndockedWidth) *
-                    static_cast<u32>(Settings::values.resolution_factor));
+                    static_cast<u32>(Settings::values.resolution_factor.GetValue()));
             rb.Push(static_cast<u32>(Service::VI::DisplayResolution::UndockedHeight) *
-                    static_cast<u32>(Settings::values.resolution_factor));
+                    static_cast<u32>(Settings::values.resolution_factor.GetValue()));
         }
 
         rb.PushRaw<float>(60.0f); // This wouldn't seem to be correct for 30 fps games.
@@ -783,6 +786,7 @@ public:
             {2300, nullptr, "AcquireLayerTexturePresentingEvent"},
             {2301, nullptr, "ReleaseLayerTexturePresentingEvent"},
             {2302, nullptr, "GetDisplayHotplugEvent"},
+            {2303, nullptr, "GetDisplayModeChangedEvent"},
             {2402, nullptr, "GetDisplayHotplugState"},
             {2501, nullptr, "GetCompositorErrorInfo"},
             {2601, nullptr, "GetDisplayErrorEvent"},
@@ -1027,9 +1031,9 @@ private:
         // between docked and undocked dimensions. We take the liberty of applying
         // the resolution scaling factor here.
         rb.Push(static_cast<u64>(DisplayResolution::UndockedWidth) *
-                static_cast<u32>(Settings::values.resolution_factor));
+                static_cast<u32>(Settings::values.resolution_factor.GetValue()));
         rb.Push(static_cast<u64>(DisplayResolution::UndockedHeight) *
-                static_cast<u32>(Settings::values.resolution_factor));
+                static_cast<u32>(Settings::values.resolution_factor.GetValue()));
     }
 
     void SetLayerScalingMode(Kernel::HLERequestContext& ctx) {
@@ -1062,8 +1066,8 @@ private:
         LOG_WARNING(Service_VI, "(STUBBED) called");
 
         DisplayInfo display_info;
-        display_info.width *= static_cast<u64>(Settings::values.resolution_factor);
-        display_info.height *= static_cast<u64>(Settings::values.resolution_factor);
+        display_info.width *= static_cast<u64>(Settings::values.resolution_factor.GetValue());
+        display_info.height *= static_cast<u64>(Settings::values.resolution_factor.GetValue());
         ctx.WriteBuffer(&display_info, sizeof(DisplayInfo));
         IPC::ResponseBuilder rb{ctx, 4};
         rb.Push(RESULT_SUCCESS);

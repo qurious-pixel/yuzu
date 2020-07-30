@@ -2,6 +2,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the license.txt file included.
 
+#include <chrono>
+
 #include "common/assert.h"
 #include "common/microprofile.h"
 #include "core/core.h"
@@ -18,6 +20,7 @@
 #include "video_core/gpu.h"
 #include "video_core/memory_manager.h"
 #include "video_core/renderer_base.h"
+#include "video_core/shader_notify.h"
 #include "video_core/video_core.h"
 
 namespace Tegra {
@@ -34,6 +37,7 @@ GPU::GPU(Core::System& system, std::unique_ptr<VideoCore::RendererBase>&& render
     kepler_compute = std::make_unique<Engines::KeplerCompute>(system, rasterizer, *memory_manager);
     maxwell_dma = std::make_unique<Engines::MaxwellDMA>(system, *memory_manager);
     kepler_memory = std::make_unique<Engines::KeplerMemory>(system, *memory_manager);
+    shader_notify = std::make_unique<VideoCore::ShaderNotify>();
 }
 
 GPU::~GPU() = default;
@@ -154,9 +158,8 @@ u64 GPU::GetTicks() const {
     constexpr u64 gpu_ticks_num = 384;
     constexpr u64 gpu_ticks_den = 625;
 
-    const u64 cpu_ticks = system.CoreTiming().GetTicks();
-    u64 nanoseconds = Core::Timing::CyclesToNs(cpu_ticks).count();
-    if (Settings::values.use_fast_gpu_time) {
+    u64 nanoseconds = system.CoreTiming().GetGlobalTimeNs().count();
+    if (Settings::values.use_fast_gpu_time.GetValue()) {
         nanoseconds /= 256;
     }
     const u64 nanoseconds_num = nanoseconds / gpu_ticks_den;

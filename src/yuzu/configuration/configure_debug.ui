@@ -148,6 +148,19 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="disable_macro_jit">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="whatsThis">
+         <string>When checked, it disables the macro Just In Time compiler. Enabled this makes games run slower</string>
+        </property>
+        <property name="text">
+         <string>Disable Macro JIT</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -212,13 +225,6 @@
        <widget class="QCheckBox" name="quest_flag">
         <property name="text">
          <string>Kiosk (Quest) Mode</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="disable_cpu_opt">
-        <property name="text">
-         <string>Disable CPU JIT optimizations</string>
         </property>
        </widget>
       </item>
