@@ -1,8 +1,7 @@
 #!/bin/bash -ex
 
 chown -R 1027:1027 /yuzu
-su yuzu
-whoami 
+ln -s /home/yuzu/.conan /root
 
 cd /yuzu
 
