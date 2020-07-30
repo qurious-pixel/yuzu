@@ -18,6 +18,7 @@ matrix:
       after_success:
       - ls -lh artifacts/* 
       - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+      - chmod a+x upload.sh
       - bash upload.sh artifacts/* 
       branches:
   except:
