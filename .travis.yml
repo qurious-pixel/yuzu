@@ -1,4 +1,5 @@
 language: cpp
+cache: ccache
 matrix:
   include:
     - os: linux
@@ -21,7 +22,6 @@ matrix:
       branches:
   except:
     - /^(?i:continuous.*)$/
-      cache: ccache
     #- os: linux
     # env: NAME="clang-format"
     #  sudo: required
