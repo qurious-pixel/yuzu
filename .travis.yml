@@ -15,9 +15,9 @@ matrix:
       script: 
        - "./.travis/appimage/build.sh"
       after_success:
-      - ls -lh out/* # Assuming you have some files in out/ that you would like to upload
+      - ls -lh artifacts/* 
       - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-      - bash upload.sh out/* 
+      - bash upload.sh artifacts/* 
       branches:
   except:
     - /^(?i:continuous.*)$/
