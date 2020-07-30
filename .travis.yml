@@ -14,7 +14,6 @@ matrix:
        - docker pull quriouspixel/yuzu:latest
       script: 
        - "./.travis/appimage/build.sh"
-       - "./.travis/appimage/appimage.sh"
     #  after_success: 
       cache: ccache
     #- os: linux
