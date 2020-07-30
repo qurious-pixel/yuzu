@@ -66,8 +66,8 @@ matrix:
 
 deploy:
   provider: releases
-  api_key:
-    secure: $GITHUB_TOKEN
+  api_key: $GITHUB_TOKEN
+#  secure: 
   file_glob: true
   file: "artifacts/*"
   skip_cleanup: true
