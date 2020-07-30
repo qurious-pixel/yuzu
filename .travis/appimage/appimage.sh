@@ -28,8 +28,6 @@ curl -sL https://github.com/darealshinji/AppImageKit-checkrt/releases/download/c
 curl -sL https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64 -o ./squashfs-root/runtime
 chmod a+x ./squashfs-root/runtime
 chmod a+x ./squashfs-root/AppRun
-chmod a+x ./squashfs-root/runtime
-chmod a+x ./squashfs-root/AppRun
 cp /tmp/libssl.so.47 /tmp/libcrypto.so.45 /usr/lib/x86_64-linux-gnu/
 
 /tmp/squashfs-root/AppRun $HOME/squashfs-root/usr/bin/yuzu -appimage -unsupported-allow-new-glibc -no-copy-copyright-files -no-translations -bundle-non-qt-libs
