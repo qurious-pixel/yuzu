@@ -16,7 +16,7 @@ cd /tmp
 	curl -sLO "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
 	curl -sLO "https://github.com/qurious-pixel/yuzu/raw/merge/.travis/appimage/crypto-libs.tar.gz"
 	curl -sLO "https://github.com/qurious-pixel/yuzu/raw/merge/.travis/appimage/update.tar.gz"
-	tar -xzf update.tar.gz
+	tar -xf update.tar.gz
 	tar -xzf crypto-libs.tar.gz
 	chmod a+x linuxdeployqt*.AppImage
 ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
