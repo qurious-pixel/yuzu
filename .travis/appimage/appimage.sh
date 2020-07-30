@@ -39,6 +39,7 @@ mkdir $HOME/artifacts/
 mkdir /yuzu/artifacts/
 mv yuzu-x86_64.AppImage $HOME/artifacts
 cp -R $HOME/artifacts /yuzu/artifacts
+chmod -R 777 /yuzu/artifacts
 cd /yuzu/artifacts
 ls -al /yuzu/artifacts
 # touch $HOME/curl.log
