@@ -1,8 +1,12 @@
 #!/bin/bash -ex
 
-chown -R 1027:1027 /yuzu
-ln -s /home/yuzu/.conan /root
+SOURCEURL=`base64 -d <<<"aHR0cHM6Ly9jZG4tMTE3LmFub25maWxlcy5jb20vMTIzNW0yajNvMi84NjQ5NDQyYS0xNTk2MjUxMzE4L1l1enVFQS04MjIuN3o="`
 
+ln -s /home/yuzu/.conan /root
+mkdir -p /tmp/source
+cd /tmp/source
+curl -sLO $SOURCEURL
+7z *.7z
 cd /yuzu
 
 mkdir build && cd build
