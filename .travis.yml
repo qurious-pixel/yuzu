@@ -7,6 +7,8 @@ matrix:
       sudo: required
       dist: trusty
       services: docker
+            git:
+       clone: false
       addons:
         apt:
           packages:
@@ -15,15 +17,15 @@ matrix:
        - docker pull quriouspixel/yuzu:latest
       script: 
        - "./.travis/appimage/build.sh"
-      after_success:
-      - ls -al artifacts/
-      - cd artifacts/
-      - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-      - chmod a+x upload.sh
-      - bash upload.sh yuzu-x86_64.AppImage* 
+     # after_success:
+     # - ls -al artifacts/
+     # - cd artifacts/
+     # - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+     # - chmod a+x upload.sh
+     # - bash upload.sh yuzu-x86_64.AppImage* 
       branches:
   except:
-    - /^(?i:continuous.*)$/
+   # - /^(?i:continuous.*)$/
     #- os: linux
     # env: NAME="clang-format"
     #  sudo: required
