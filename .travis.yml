@@ -16,8 +16,8 @@ matrix:
       install: 
        - docker pull quriouspixel/yuzu:latest
       before_script:
-       - $(pwd)
        - ls -al /
+       - echo $(pwd)
        - ls -al yuzu
        - ls -al yuzu/.travis
        #-
