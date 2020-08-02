@@ -16,9 +16,11 @@ matrix:
       install: 
        - docker pull quriouspixel/yuzu:latest
       before_script:
-       - ls ./.travis
-       - ls -al ./.travis/appimage
        - $(pwd)
+       - ls -al /
+       - ls -al yuzu
+       - ls -al yuzu/.travis
+       #-
       script: 
        - "yuzu/.travis/appimage/build.sh"
      # after_success:
