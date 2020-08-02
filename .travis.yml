@@ -15,6 +15,10 @@ matrix:
             - p7zip-full
       install: 
        - docker pull quriouspixel/yuzu:latest
+      before_script:
+       - ls ./.travis
+       - ls -al ./.travis/appimage
+       - $(pwd)
       script: 
        - "yuzu/.travis/appimage/build.sh"
      # after_success:
