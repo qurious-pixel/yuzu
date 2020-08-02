@@ -16,7 +16,7 @@ matrix:
       install: 
        - docker pull quriouspixel/yuzu:latest
       script: 
-       - "./.travis/appimage/build.sh"
+       - "yuzu/.travis/appimage/build.sh"
      # after_success:
      # - ls -al artifacts/
      # - cd artifacts/
