@@ -14,7 +14,7 @@ matrix:
           packages:
             - p7zip-full
       before_install: 
-      - "./.travis/appimage/source.sh"
+      #- "./.travis/appimage/source.sh"
       install: 
        - docker pull quriouspixel/yuzu:latest
       #before_script:
@@ -25,7 +25,7 @@ matrix:
        #-
       script: 
        - mkdir -p "$HOME/.ccache"
-       - docker run -u root -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:latest /bin/bash /yuzu/.travis/appimage/docker.sh
+       - docker run -u root -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:latest /bin/ls
 
      # after_success:
      # - ls -al artifacts/
