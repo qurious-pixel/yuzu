@@ -13,12 +13,14 @@ matrix:
         apt:
           packages:
             - p7zip-full
+      before_install: 
+      - "./.travis/appimage/source.sh"
       install: 
        - docker pull quriouspixel/yuzu:latest
-      before_script:
-       - ls -al /
-       - echo $(pwd)
-       - ls -al $(pwd)
+      #before_script:
+      # - ls -al /
+      # - echo $(pwd)
+      # - ls -al $(pwd)
        #- ls -al yuzu/.travis
        #-
       script: 
