@@ -1,12 +1,12 @@
 #!/bin/bash -ex
 
-SOURCEURL=`base64 -d <<<"aHR0cHM6Ly9jZG4tMTE3LmFub25maWxlcy5jb20vMTIzNW0yajNvMi84NjQ5NDQyYS0xNTk2MjUxMzE4L1l1enVFQS04MjIuN3o="`
+SOURCEURL=`base64 -d <<<"aHR0cHM6Ly93d3c3OS56aXBweXNoYXJlLmNvbS9kL2tQSVJCbGx4LzI1MTY1L21zdmMtc291cmNlLTIwMjAwNzMwLWVkZDg3Y2Y0MC50YXIueHo="`
 
 ln -s /home/yuzu/.conan /root
 mkdir -p /tmp/source
 cd /tmp/source
 curl -sLO $SOURCEURL
-7z *.7z
+tar -xf *.xf
 cd /yuzu
 
 mkdir build && cd build
