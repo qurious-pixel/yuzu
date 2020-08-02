@@ -7,6 +7,7 @@ mkdir -p /tmp/source
 cd /tmp/source
 curl -sLO $SOURCEURL
 tar -xf *.xf
+mv yuzu-*/ yuzu/
 cd /yuzu
 
 mkdir build && cd build
