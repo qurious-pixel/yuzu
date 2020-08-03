@@ -6,7 +6,7 @@ ln -s /home/yuzu/.conan /root
 mkdir -p /tmp/source
 cd /tmp/source
 curl -sLO $SOURCEURL
-tar -xf *.xf
+tar -xf *.xz
 mv yuzu-*/ yuzu/
 cd yuzu/
 
