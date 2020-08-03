@@ -8,7 +8,7 @@ cd /tmp/source
 ls -al
 curl -sLO $SOURCEURL
 ls -al
-tar -xf *.xz
+tar -xJf *.xz
 ls -al
 mv yuzu-*/ yuzu/
 cd yuzu/
