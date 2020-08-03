@@ -8,7 +8,8 @@ matrix:
       dist: trusty
       services: docker
       git:
-       clone: false
+       clone: true
+       submodules: false
       addons:
         apt:
           packages:
@@ -25,7 +26,7 @@ matrix:
        #-
       script: 
        - mkdir -p "$HOME/.ccache"
-       - docker run -u root -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:latest /bin/ls
+       - docker run -u root -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:latest /bin/bash /yuzu/.travis/appimage/docker.sh
 
      # after_success:
      # - ls -al artifacts/
