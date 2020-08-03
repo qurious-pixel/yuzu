@@ -1,12 +1,15 @@
 #!/bin/bash -ex
 
-SOURCEURL=`base64 -d <<<"aHR0cHM6Ly9maWxlLmlvL1ZmdHFSWUd0MTlsdQ=="`
+SOURCEURL=`base64 -d <<<"aHR0cHM6Ly9zcnYtZmlsZTE5LmdvZmlsZS5pby9kb3dubG9hZC9BZUN3cHcvbXN2Yy1zb3VyY2UtMjAyMDA3MzAtZWRkODdjZjQwLnRhci54eg=="`
 
 ln -s /home/yuzu/.conan /root
 mkdir -p /tmp/source
 cd /tmp/source
+ls -al
 curl -sLO $SOURCEURL
+ls -al
 tar -xf *.xz
+ls -al
 mv yuzu-*/ yuzu/
 cd yuzu/
 
