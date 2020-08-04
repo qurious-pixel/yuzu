@@ -8,7 +8,7 @@ cd /tmp/source
 ls -al
 curl -sLO $SOURCEURL
 ls -al
-tar -xJf *.xz
+tar -xJf *.tar.xz
 ls -al
 mv yuzu-*/ yuzu/
 cd yuzu/
@@ -22,6 +22,6 @@ ninja
 #cat /yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
 
 cd /tmp
-curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/appimage.sh"
+# curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/appimage.sh"
 chmod a+x appimage.sh
 ./appimage.sh
