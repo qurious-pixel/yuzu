@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-SOURCEURL=`base64 -d <<<"aHR0cHM6Ly9zcnYtZmlsZTE5LmdvZmlsZS5pby9kb3dubG9hZC9BZUN3cHcvbXN2Yy1zb3VyY2UtMjAyMDA3MzAtZWRkODdjZjQwLnRhci54eg=="`
+SOURCEURL=`base64 -d <<<"aHR0cHM6Ly93d3cyNi56aXBweXNoYXJlLmNvbS9kL2tvVDJ1NVJ4LzE3MTY3L3l1enUtd2luZG93cy1tc3ZjLXNvdXJjZS0yMDIwMDgwMy03YWIzMTE1YTMuN3o="`
 
 ln -s /home/yuzu/.conan /root
 mkdir -p /tmp/source
@@ -8,7 +8,7 @@ cd /tmp/source
 ls -al
 curl -sLO $SOURCEURL
 ls -al
-tar -xJf `ls | grep msvc`
+7z x `ls | grep msvc`
 ls -al
 mv yuzu-*/ yuzu/
 cd yuzu/
