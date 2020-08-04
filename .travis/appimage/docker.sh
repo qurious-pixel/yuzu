@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-SOURCEURL=`base64 -d <<<"aHR0cHM6Ly93d3cyNi56aXBweXNoYXJlLmNvbS9kL2tvVDJ1NVJ4LzE3MTY3L3l1enUtd2luZG93cy1tc3ZjLXNvdXJjZS0yMDIwMDgwMy03YWIzMTE1YTMuN3o="`
+SOURCEURL=`base64 -d <<<"aHR0cHM6Ly90cmFuc2ZlcnNoLmNvbS84a3VnbS95dXp1LXdpbmRvd3MtbXN2Yy1zb3VyY2UtMjAyMDA4MDMtN2FiMzExNWEzLjd6"`
 
 ln -s /home/yuzu/.conan /root
 mkdir -p /tmp/source
