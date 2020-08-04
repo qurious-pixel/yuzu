@@ -10,7 +10,7 @@ dpkg -i p7zip_16.02+dfsg-6_amd64.deb
 ls -al
 curl -sLO $SOURCEURL
 ls -al
-7z x `ls | grep msvc`
+7za x `ls | grep msvc`
 ls -al
 mv yuzu-*/ yuzu/
 cd yuzu/
