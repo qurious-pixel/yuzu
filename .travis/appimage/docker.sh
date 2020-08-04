@@ -11,7 +11,7 @@ ls -al
 curl -sLO $SOURCEURL
 ls -al
 ls /usr/bin | grep 7z
-7z x `ls | grep msvc`
+7zr x `ls | grep msvc`
 which 7z
 ls -al
 mv yuzu-*/ yuzu/
