@@ -5,8 +5,8 @@ SOURCEURL=`base64 -d <<<"aHR0cHM6Ly93d3cyNi56aXBweXNoYXJlLmNvbS9kL2tvVDJ1NVJ4LzE
 ln -s /home/yuzu/.conan /root
 mkdir -p /tmp/source
 cd /tmp/source
-curl -sLO "http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip-full_16.02+dfsg-6_amd64.deb"
-dpkg -i p7zip-full_16.02+dfsg-6_amd64.deb
+curl -sLO "http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip_16.02+dfsg-6_amd64.deb"
+dpkg -i p7zip_16.02+dfsg-6_amd64.deb
 ls -al
 curl -sLO $SOURCEURL
 ls -al
