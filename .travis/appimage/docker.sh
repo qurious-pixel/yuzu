@@ -11,16 +11,11 @@ export PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
 ln -s /home/yuzu/.conan /root
 mkdir -p /tmp/source
 cd /tmp/source
-curl -sLO "http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip_16.02+dfsg-6_amd64.deb"
-curl -sLO "http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip-full_16.02+dfsg-6_amd64.deb"
-dpkg -i *.deb
-ls -al
+#curl -sLO "http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip_16.02+dfsg-6_amd64.deb"
+#curl -sLO "http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip-full_16.02+dfsg-6_amd64.deb"
+#dpkg -i *.deb
 curl -sLO $SOURCEURL
-ls -al
-ls /usr/bin | grep 7z
 7z x `ls | grep msvc`
-which 7z
-ls -al
 mv yuzu-*/ yuzu/
 cd yuzu/
 
@@ -35,14 +30,14 @@ ls /yuzu/src/sdl/
 cp /yuzu/src/web_service/web_backend.cpp /tmp/source/yuzu/src/web_service/
 cp /yuzu/src/input_common/sdl/sdl_impl.cpp /tmp/source/yuzu/src/input_common/sdl/
 
-#cmake .. -G Ninja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/lib/ccache/gcc -DCMAKE_CXX_COMPILER=/usr/lib/ccache/g++ -DTITLE_BAR_FORMAT_IDLE="yuzu Early Access $title" -DTITLE_BAR_FORMAT_RUNNING="yuzu Early Access $title | {3}" -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DGIT_BRANCH="HEAD" -DGIT_DESC="$msvc" 
-cmake .. -G Ninja
+cmake .. -G Ninja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/lib/ccache/gcc -DCMAKE_CXX_COMPILER=/usr/lib/ccache/g++ -DTITLE_BAR_FORMAT_IDLE="yuzu Early Access $title" -DTITLE_BAR_FORMAT_RUNNING="yuzu Early Access $title | {3}" -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DGIT_BRANCH="HEAD" -DGIT_DESC="$msvc" 
+#cmake .. -G Ninja
 
 ninja
 
-cat /yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
+cat yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
 
 cd /tmp
-# curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/appimage.sh"
+curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/appimage.sh"
 chmod a+x appimage.sh
 ./appimage.sh
