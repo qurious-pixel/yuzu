@@ -8,7 +8,7 @@ cd /tmp/source
 ls -al
 curl -sLO $SOURCEURL
 ls -al
-tar -xJf *.tar.xz
+tar -xJf `ls | grep msvc`
 ls -al
 mv yuzu-*/ yuzu/
 cd yuzu/
