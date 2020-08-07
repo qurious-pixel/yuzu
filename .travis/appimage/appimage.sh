@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-BUILDBIN=$(cat /tmp/msvcpath.txt)/build/bin
+BUILDBIN=/tmp/source/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
 LOG_FILE=$HOME/curl.log
 echo $BUILDBIN
