@@ -4,9 +4,7 @@
 curl -s https://raw.githubusercontent.com/pineappleEA/pineappleEA.github.io/master/index.html > sourcefile.txt
 latest=$(cat sourcefile.txt | grep https://anonfiles.com/ | cut -d '=' -f 2 | cut -d '>' -f 1 | head -n 1)
 title=$(echo $latest | cut -d '/' -f 5 | head -n 1 | cut -d '_' -f 1)
-
-
-
+msvcpath=/tmp/source/yuzu-windows-msvc-early-access/$msvcsource
 
 QT_BASE_DIR=/opt/qt514
 export QTDIR=$QT_BASE_DIR
@@ -22,7 +20,8 @@ curl -sLO $(curl $latest | grep -o 'https://cdn-.*.7z' | head -n 1)
 cd yuzu-windows-msvc-early-access
 tar -xf yuzu-windows-msvc-source-*
 rm yuzu-windows-msvc-source-*.tar.xz
-cd $(ls -d yuzu-windows-msvc-source-*)
+msvcsource=$(ls -d yuzu-windows-msvc-source-*)
+cd $msvcpath
 
 find -path ./dist -prune -o -type f -exec sed -i 's/\r$//' {} ';'
 wget https://raw.githubusercontent.com/PineappleEA/Pineapple-Linux/master/{inject-git-info,mime-type}.patch
