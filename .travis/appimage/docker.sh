@@ -20,8 +20,9 @@ curl -sLO $(curl $latest | grep -o 'https://cdn-.*.7z' | head -n 1)
 cd yuzu-windows-msvc-early-access
 tar -xf yuzu-windows-msvc-source-*
 rm yuzu-windows-msvc-source-*.tar.xz
-msvcsource=$(ls -d yuzu-windows-msvc-source-*)
-cd $msvcpath
+cd $(ls -d yuzu-windows-msvc-source-*)
+msvcsource=$(echo $pwd)
+echo $msvcsource
 
 find -path ./dist -prune -o -type f -exec sed -i 's/\r$//' {} ';'
 wget https://raw.githubusercontent.com/PineappleEA/Pineapple-Linux/master/{inject-git-info,mime-type}.patch
@@ -30,8 +31,8 @@ patch -p1 < mime-type.patch
 msvc=$(echo "${PWD##*/}"|sed 's/.*-//')
 mkdir -p build && cd build
 
-cp /yuzu/src/web_service/web_backend.cpp /tmp/source/yuzu/src/web_service/
-cp /yuzu/src/input_common/sdl/sdl_impl.cpp /tmp/source/yuzu/src/input_common/sdl/
+#cp /yuzu/src/web_service/web_backend.cpp /tmp/source/yuzu/src/web_service/
+#cp /yuzu/src/input_common/sdl/sdl_impl.cpp /tmp/source/yuzu/src/input_common/sdl/
 
 cmake .. -G Ninja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/lib/ccache/gcc -DCMAKE_CXX_COMPILER=/usr/lib/ccache/g++ -DTITLE_BAR_FORMAT_IDLE="yuzu Early Access $title" -DTITLE_BAR_FORMAT_RUNNING="yuzu Early Access $title | {3}" -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DGIT_BRANCH="HEAD" -DGIT_DESC="$msvc" -DUSE_DISCORD_PRESENCE=ON
 
