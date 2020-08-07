@@ -1,6 +1,12 @@
 #!/bin/bash -ex
 
-SOURCEURL=`base64 -d <<<"aHR0cHM6Ly90cmFuc2ZlcnNoLmNvbS84a3VnbS95dXp1LXdpbmRvd3MtbXN2Yy1zb3VyY2UtMjAyMDA4MDMtN2FiMzExNWEzLjd6"`
+#SOURCEURL=`base64 -d <<<"aHR0cHM6Ly90cmFuc2ZlcnNoLmNvbS84a3VnbS95dXp1LXdpbmRvd3MtbXN2Yy1zb3VyY2UtMjAyMDA4MDMtN2FiMzExNWEzLjd6"`
+curl -s https://raw.githubusercontent.com/pineappleEA/pineappleEA.github.io/master/index.html > sourcefile.txt
+latest=$(cat sourcefile.txt | grep https://anonfiles.com/ | cut -d '=' -f 2 | cut -d '>' -f 1 | head -n 1)
+title=$(echo $latest | cut -d '/' -f 5 | head -n 1 | cut -d '_' -f 1)
+
+
+
 
 QT_BASE_DIR=/opt/qt514
 export QTDIR=$QT_BASE_DIR
@@ -11,14 +17,17 @@ export PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
 ln -s /home/yuzu/.conan /root
 mkdir -p /tmp/source
 cd /tmp/source
-curl -sLO $SOURCEURL
-7z x `ls | grep msvc`
-mv yuzu-*/ yuzu/
-cd yuzu/
+curl -sLO $(curl $latest | grep -o 'https://cdn-.*.7z' | head -n 1)
+7z x Yuzu* yuzu-windows-msvc-early-access/yuzu-windows-msvc-source-*
+cd yuzu-windows-msvc-early-access
+tar -xf yuzu-windows-msvc-source-*
+rm yuzu-windows-msvc-source-*.tar.xz
+cd $(ls -d yuzu-windows-msvc-source-*)
 
 find -path ./dist -prune -o -type f -exec sed -i 's/\r$//' {} ';'
-wget https://raw.githubusercontent.com/PineappleEA/Pineapple-Linux/master/inject-git-info.patch
+wget https://raw.githubusercontent.com/PineappleEA/Pineapple-Linux/master/{inject-git-info,mime-type}.patch
 patch -p1 < inject-git-info.patch
+patch -p1 < mime-type.patch
 msvc=$(echo "${PWD##*/}"|sed 's/.*-//')
 mkdir -p build && cd build
 
