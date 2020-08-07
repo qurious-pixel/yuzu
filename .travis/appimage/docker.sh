@@ -40,6 +40,8 @@ ninja
 #cat yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
 
 cd /tmp
+echo $msvcpath > msvcpath.txt
+cat msvcpath.txt
 curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/pineapple/.travis/appimage/appimage.sh"
 chmod a+x appimage.sh
 ./appimage.sh
