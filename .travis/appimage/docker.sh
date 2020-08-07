@@ -20,7 +20,7 @@ curl -sLO $(curl $latest | grep -o 'https://cdn-.*.7z' | head -n 1)
 cd yuzu-windows-msvc-early-access
 tar -xf yuzu-windows-msvc-source-* --directory /tmp/source/yuzu
 rm yuzu-windows-msvc-source-*.tar.xz
-cd yuzu/
+cd /tmp/source/yuzu/
 
 find -path ./dist -prune -o -type f -exec sed -i 's/\r$//' {} ';'
 wget https://raw.githubusercontent.com/PineappleEA/Pineapple-Linux/master/{inject-git-info,mime-type}.patch
