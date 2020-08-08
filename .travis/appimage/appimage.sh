@@ -25,7 +25,7 @@ mkdir -p squashfs-root/usr/bin
 cp -P "$BUILDBIN"/yuzu $HOME/squashfs-root/usr/bin/
 
 curl -sL https://raw.githubusercontent.com/pineappleEA/Pineapple-Linux/master/yuzu.svg -o ./squashfs-root/yuzu.svg
-curl -sL https://raw.githubusercontent.com/pineappleEA/Pineapple-Linux/master/yuzu.desktop -o ./squashfs-root/yuzu.desktop
+curl -sL https://raw.githubusercontent.com/qurious-pixel/yuzu/pineapple/dist/yuzu.desktop -o ./squashfs-root/yuzu.desktop
 curl -sL https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64 -o ./squashfs-root/runtime
 mkdir -p squashfs-root/usr/share/applications && cp ./squashfs-root/yuzu.desktop ./squashfs-root/usr/share/applications
 mkdir -p squashfs-root/usr/share/icons && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/icons
