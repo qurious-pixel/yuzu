@@ -33,7 +33,7 @@ matrix:
      # - cd artifacts/
      # - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
      # - chmod a+x upload.sh
-     # - bash upload.sh yuzu-x86_64.AppImage* 
+     # - bash upload.sh yuzu* 
       branches:
   except:
    # - /^(?i:continuous.*)$/
