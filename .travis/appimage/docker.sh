@@ -19,6 +19,12 @@ curl -sLO $(curl $latest | grep -o 'https://cdn-.*.7z' | head -n 1)
 7z x Yuzu* yuzu-windows-msvc-early-access/yuzu-windows-msvc-source-*
 cd yuzu-windows-msvc-early-access
 tar -xf yuzu-windows-msvc-source-* --directory /tmp/source/yuzu
+ls -al .
+echo "$pwd"
+ls -al ./yuzu/
+echo "\/tmp\/source\/yuzu"
+ls -al /yuzu
+echo "\/yuzu"
 rm yuzu-windows-msvc-source-*.tar.xz
 cd /tmp/source/yuzu/
 
