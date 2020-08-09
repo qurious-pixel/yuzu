@@ -31,8 +31,10 @@ mkdir -p squashfs-root/usr/share/applications && cp ./squashfs-root/yuzu.desktop
 mkdir -p squashfs-root/usr/share/icons && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/icons
 mkdir -p squashfs-root/usr/share/pixmaps && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/pixmaps
 mv /tmp/update/AppRun $HOME/squashfs-root/
+mv /tmp/update/update.sh $HOME/squashfs-root/
 chmod a+x ./squashfs-root/runtime
 chmod a+x ./squashfs-root/AppRun
+chmod a+x ./squashfs-root/update.sh
 cp /tmp/libssl.so.47 /tmp/libcrypto.so.45 /usr/lib/x86_64-linux-gnu/
 
 echo $TRAVIS_COMMIT > $HOME/squashfs-root/version.txt
@@ -52,7 +54,7 @@ mkdir $HOME/artifacts/
 mkdir -p /yuzu/artifacts/
 mv yuzu-x86_64.AppImage* $HOME/artifacts
 cp -R $HOME/artifacts/ /yuzu/
-cp "$BUILDBIN"/yuzu /yuzu/
+cp "$BUILDBIN"/yuzu /yuzu/artifacts
 chmod -R 777 /yuzu/artifacts
 cd /yuzu/artifacts
 ls -al /yuzu/artifacts/
