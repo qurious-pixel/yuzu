@@ -14,10 +14,8 @@ export PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
 
 cd /tmp
 	curl -sLO "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-	curl -sLO "https://github.com/qurious-pixel/yuzu/raw/master/.travis/appimage/crypto-libs.tar.gz"
 	curl -sLO "https://github.com/qurious-pixel/yuzu/raw/master/.travis/appimage/update.tar.gz"
 	tar -xzf update.tar.gz
-	tar -xzf crypto-libs.tar.gz
 	chmod a+x linuxdeployqt*.AppImage
 ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
 cd $HOME
@@ -30,8 +28,8 @@ curl -sL https://github.com/AppImage/AppImageKit/releases/download/continuous/ru
 mkdir -p squashfs-root/usr/share/applications && cp ./squashfs-root/yuzu.desktop ./squashfs-root/usr/share/applications
 mkdir -p squashfs-root/usr/share/icons && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/icons
 mkdir -p squashfs-root/usr/share/pixmaps && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/pixmaps
-mv /tmp/update/AppRun $HOME/squashfs-root/
-mv /tmp/update/update.sh $HOME/squashfs-root/
+curl -sL "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/update.sh" -o $HOME/squashfs-root/update.sh
+curl -sL "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/AppRun" -o $HOME/squashfs-root/AppRun
 chmod a+x ./squashfs-root/runtime
 chmod a+x ./squashfs-root/AppRun
 chmod a+x ./squashfs-root/update.sh
