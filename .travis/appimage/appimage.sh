@@ -27,6 +27,7 @@ curl -sL https://raw.githubusercontent.com/yuzu-emu/yuzu/master/dist/yuzu.deskto
 curl -sL https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64 -o ./squashfs-root/runtime
 mkdir -p squashfs-root/usr/share/applications && cp ./squashfs-root/yuzu.desktop ./squashfs-root/usr/share/applications
 mkdir -p squashfs-root/usr/share/icons && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/icons
+mkdir -p squashfs-root/usr/share/icons/hicolor/scalable/apps && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/icons/hicolor/scalable/apps
 mkdir -p squashfs-root/usr/share/pixmaps && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/pixmaps
 curl -sL "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/update.sh" -o $HOME/squashfs-root/update.sh
 curl -sL "https://raw.githubusercontent.com/qurious-pixel/yuzu/master/.travis/appimage/AppRun" -o $HOME/squashfs-root/AppRun
