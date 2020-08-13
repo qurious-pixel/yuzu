@@ -1,7 +1,7 @@
 #!/bin/sh -ex
 
 brew update
-brew install p7zip qt5 sdl2 ccache
+brew install p7zip qt5 sdl2 ccache conan
 brew outdated cmake || brew upgrade cmake
 pip3 install macpack
-pip3 install --user conan
+pip3 install conan
