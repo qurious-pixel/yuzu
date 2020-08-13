@@ -2,7 +2,7 @@
 
 mkdir -p $HOME/.local/share/icons/hicolor/scalable/apps && cp $APPDIR/yuzu.svg $HOME/.local/share/icons/hicolor/scalable/apps
 
-GITVER=`wget -qO- https://www.github.com/pineappleEA/Pineapple-Linux-Binary/releases/tag/continuous | grep pineappleEA/Pineapple-Linux-Binary/commit/ | cut -d '"' -f 2 | cut -d '/' -f 5 | awk '!x[$0]++'` 
+GITVER=`wget -qO- https://www.github.com/qurious-pixel/yuzu/releases/tag/continuous | grep qurious-pixel/yuzu/commit/ | cut -d '"' -f 2 | cut -d '/' -f 5 | awk '!x[$0]++'` 
 APPVER=`cat $APPDIR/version.txt`
 
 if [ "$GITVER" = "$APPVER" ]; then
