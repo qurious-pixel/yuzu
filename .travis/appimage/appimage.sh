@@ -43,6 +43,7 @@ chmod a+x ./squashfs-root/AppRun
 chmod a+x ./squashfs-root/update.sh
 cp /tmp/update/libssl.so.47 /tmp/update/libcrypto.so.45 /usr/lib/x86_64-linux-gnu/
 cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6 squashfs-root/usr/optional/libstdc++/
+apt install -y zenity 
 cp /usr/bin/zenity squashfs-root/usr/bin/
 printf "#include <bits/stdc++.h>\nint main(){std::make_exception_ptr(0);std::pmr::get_default_resource();}" | $CXX -x c++ -std=c++2a -o $HOME/squashfs-root/usr/optional/checker -
 
