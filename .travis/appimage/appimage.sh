@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-branch=apprun
+branch=master
 
 BUILDBIN=/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
@@ -21,6 +21,10 @@ cd /tmp
 	tar -xzf update.tar.gz
 	chmod a+x linuxdeployqt*.AppImage
 ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
+	mkdir zen && cd zen
+	curl -sLO "http://launchpadlibrarian.net/364557924/zenity_3.28.1-1_amd64.deb"
+	ar x zenity_3.28.1-1_amd64.deb && tar xvf data.tar.xz && cp usr/bin/zenity . 
+
 cd $HOME
 mkdir -p squashfs-root/usr/bin
 cp -P "$BUILDBIN"/yuzu $HOME/squashfs-root/usr/bin/
@@ -43,6 +47,7 @@ chmod a+x ./squashfs-root/AppRun
 chmod a+x ./squashfs-root/update.sh
 cp /tmp/update/libssl.so.47 /tmp/update/libcrypto.so.45 /usr/lib/x86_64-linux-gnu/
 cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6 squashfs-root/usr/optional/libstdc++/
+cp /tmp/zen/zenity squashfs-root/usr/bin/
 printf "#include <bits/stdc++.h>\nint main(){std::make_exception_ptr(0);std::pmr::get_default_resource();}" | $CXX -x c++ -std=c++2a -o $HOME/squashfs-root/usr/optional/checker -
 
 echo $TRAVIS_COMMIT > $HOME/squashfs-root/version.txt
