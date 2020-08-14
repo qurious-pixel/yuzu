@@ -21,9 +21,9 @@ cd /tmp
 	tar -xzf update.tar.gz
 	chmod a+x linuxdeployqt*.AppImage
 ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
-	mkdir zen
+	mkdir zen && cd zen
 	curl -sLO "http://launchpadlibrarian.net/364557924/zenity_3.28.1-1_amd64.deb"
-	cd zen/ && ar x zenity_3.28.1-1_amd64.deb && tar xvf data.tar.xz && cp usr/bin/zenity . 
+	ar x zenity_3.28.1-1_amd64.deb && tar xvf data.tar.xz && cp usr/bin/zenity . 
 
 cd $HOME
 mkdir -p squashfs-root/usr/bin
