@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-branch=apprun
+branch=master
 
 BUILDBIN=/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
