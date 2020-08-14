@@ -14,12 +14,7 @@ namespace Core::Frontend {
 
 /// Information for the Graphics Backends signifying what type of screen pointer is in
 /// WindowInformation
-enum class WindowSystemType {
-    Headless,
-    Windows,
-    X11,
-    Wayland,
-};
+enum class WindowSystemType { Headless, Windows, X11, Wayland, MacOS };
 
 /**
  * Represents a drawing context that supports graphics operations.
@@ -154,6 +149,14 @@ public:
      */
     const WindowSystemInfo& GetWindowInfo() const {
         return window_info;
+    }
+
+    /**
+     * Returns drawing area raw pointer
+     * Unsafe version for MoltenVK to modify pointer
+     */
+    void*& GetRenderSurface() {
+        return window_info.render_surface;
     }
 
     /**

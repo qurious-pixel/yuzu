@@ -266,3 +266,7 @@ if (MSVC)
 else()
     target_compile_options(video_core PRIVATE -Werror=conversion -Wno-error=sign-conversion)
 endif()
+
+if (APPLE)
+  target_include_directories(video_core PRIVATE ../../externals/MoltenVK/include)
+endif()
