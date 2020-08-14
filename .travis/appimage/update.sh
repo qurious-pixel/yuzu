@@ -1,6 +1,6 @@
 #!/bin/bash
 
-zenity --question --timeout=10 --title="yuzu updater" --text="New update available. Update now?" --icon-name=yuzu --window-icon=yuzu.svg --height=80 --width=400
+$APPDIR/usr/bin/zenity --question --timeout=10 --title="yuzu updater" --text="New update available. Update now?" --icon-name=yuzu --window-icon=yuzu.svg --height=80 --width=400
 answer=$?
 
 if [ "$answer" -eq 0 ]; then 
