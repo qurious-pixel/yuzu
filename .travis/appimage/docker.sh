@@ -38,7 +38,7 @@ cmake .. -G Ninja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DCMA
 
 ninja
 
-cat /tmp/source//build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
+cat /tmp/source/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
 
 cd /tmp
 #curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/pineapple/.travis/appimage/appimage.sh"
