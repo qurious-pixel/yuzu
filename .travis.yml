@@ -17,7 +17,7 @@ matrix:
       before_install: 
       #- "./.travis/appimage/source.sh"
       install: 
-       - docker pull quriouspixel/yuzu:20.04
+       - docker pull quriouspixel/yuzu:latest
       #before_script:
       # - ls -al /
       # - echo $(pwd)
@@ -26,7 +26,7 @@ matrix:
        #-
       script: 
        - mkdir -p "$HOME/.ccache"
-       - docker run -u root -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:20.04 /bin/bash /yuzu/.travis/appimage/docker.sh
+       - docker run -u root -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:latest /bin/bash /yuzu/.travis/appimage/docker.sh
 
      # after_success:
      # - ls -al artifacts/
