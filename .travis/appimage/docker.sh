@@ -11,8 +11,8 @@ export PATH=$QT_BASE_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$QT_BASE_DIR/lib/x86_64-linux-gnu:$QT_BASE_DIR/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
 # APT Packages
-apt-get update
-apt install -y libglu1-mesa-dev
+#apt-get update
+#apt install -y libglu1-mesa-dev
 
 
 ln -s /home/yuzu/.conan /root
@@ -42,9 +42,9 @@ cmake .. -G Ninja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DCMA
 
 ninja
 
-cat /tmp/source/yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
+# cat /tmp/source/yuzu/build/CMakeFiles/CMakeError.log | curl -F 'f:1=<-' ix.io
 
 cd /tmp
-#curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/pineapple/.travis/appimage/appimage.sh"
-#chmod a+x appimage.sh
+curl -sLO "https://raw.githubusercontent.com/qurious-pixel/yuzu/pineapple/.travis/appimage/appimage.sh"
+chmod a+x appimage.sh
 ./appimage.sh
