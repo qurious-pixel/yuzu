@@ -7,7 +7,7 @@ ln -s /home/yuzu/.conan /root
 
 #APT
 apt-get update
-apt install -y freeglut3-dev mesa-common-dev 
+apt install -y libopengl0
 
 cd /yuzu
 
