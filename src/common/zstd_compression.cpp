@@ -2,49 +2,44 @@
 // Licensed under GPLv2 or any later version
 // Refer to the license.txt file included.
 
-#include <algorithm>
-#include <zstd.h>
+#pragma once
 
-#include "common/zstd_compression.h"
+#include <vector>
+
+#include "common/common_types.h"
 
 namespace Common::Compression {
 
-std::vector<u8> CompressDataZSTD(std::span<const u8> source, s32 compression_level) {
-    compression_level = std::clamp(compression_level, 1, ZSTD_maxCLevel());
+/**
+ * Compresses a source memory region with Zstandard and returns the compressed data in a vector.
+ *
+ * @param source            The uncompressed source memory region.
+ * @param source_size       The size of the uncompressed source memory region.
+ * @param compression_level The used compression level. Should be between 1 and 22.
+ *
+ * @return the compressed data.
+ */
+[[nodiscard]] std::vector<u8> CompressDataZSTD(const u8* source, std::size_t source_size,
+                                               s32 compression_level);
 
-    const std::size_t max_compressed_size = ZSTD_compressBound(source.size());
-    std::vector<u8> compressed(max_compressed_size);
+/**
+ * Compresses a source memory region with Zstandard with the default compression level and returns
+ * the compressed data in a vector.
+ *
+ * @param source      The uncompressed source memory region.
+ * @param source_size The size of the uncompressed source memory region.
+ *
+ * @return the compressed data.
+ */
+[[nodiscard]] std::vector<u8> CompressDataZSTDDefault(const u8* source, std::size_t source_size);
 
-    const std::size_t compressed_size = ZSTD_compress(
-        compressed.data(), compressed.size(), source.data(), source.size(), compression_level);
-
-    if (ZSTD_isError(compressed_size)) {
-        // Compression failed
-        return {};
-    }
-
-    compressed.resize(compressed_size);
-
-    return compressed;
-}
-
-std::vector<u8> CompressDataZSTDDefault(std::span<const u8> source) {
-    return CompressDataZSTD(source, ZSTD_CLEVEL_DEFAULT);
-}
-
-std::vector<u8> DecompressDataZSTD(const std::vector<u8>& compressed) {
-    const std::size_t decompressed_size =
-        ZSTD_getDecompressedSize(compressed.data(), compressed.size());
-    std::vector<u8> decompressed(decompressed_size);
-
-    const std::size_t uncompressed_result_size = ZSTD_decompress(
-        decompressed.data(), decompressed.size(), compressed.data(), compressed.size());
-
-    if (decompressed_size != uncompressed_result_size || ZSTD_isError(uncompressed_result_size)) {
-        // Decompression failed
-        return {};
-    }
-    return decompressed;
-}
+/**
+ * Decompresses a source memory region with Zstandard and returns the uncompressed data in a vector.
+ *
+ * @param compressed the compressed source memory region.
+ *
+ * @return the decompressed data.
+ */
+[[nodiscard]] std::vector<u8> DecompressDataZSTD(const std::vector<u8>& compressed);
 
 } // namespace Common::Compression
