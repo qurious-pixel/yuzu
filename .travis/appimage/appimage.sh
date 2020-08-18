@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-branch=master
+branch=master-test
 
 BUILDBIN=/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
@@ -14,6 +14,10 @@ export QTDIR=$QT_BASE_DIR
 export PATH=$QT_BASE_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$QT_BASE_DIR/lib/x86_64-linux-gnu:$QT_BASE_DIR/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
+
+#APT
+apt-get update
+apt install -y libgl-dev 
 
 cd /tmp
 	curl -sLO "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
