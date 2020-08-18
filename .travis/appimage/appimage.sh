@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+branch=pineapple
+
 BUILDBIN=/tmp/source/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
 LOG_FILE=$HOME/curl.log
@@ -22,18 +24,26 @@ cd $HOME
 mkdir -p squashfs-root/usr/bin
 cp -P "$BUILDBIN"/yuzu $HOME/squashfs-root/usr/bin/
 
-curl -sL https://raw.githubusercontent.com/pineappleEA/Pineapple-Linux/master/yuzu.svg -o ./squashfs-root/yuzu.svg
-curl -sL https://raw.githubusercontent.com/qurious-pixel/yuzu/pineapple/dist/yuzu.desktop -o ./squashfs-root/yuzu.desktop
+curl -sL https://raw.githubusercontent.com/yuzu-emu/yuzu/master/dist/yuzu.svg -o ./squashfs-root/yuzu.svg
+curl -sL https://raw.githubusercontent.com/yuzu-emu/yuzu/master/dist/yuzu.desktop -o ./squashfs-root/yuzu.desktop
 curl -sL https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64 -o ./squashfs-root/runtime
 mkdir -p squashfs-root/usr/share/applications && cp ./squashfs-root/yuzu.desktop ./squashfs-root/usr/share/applications
 mkdir -p squashfs-root/usr/share/icons && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/icons
+mkdir -p squashfs-root/usr/share/icons/hicolor/scalable/apps && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/icons/hicolor/scalable/apps
 mkdir -p squashfs-root/usr/share/pixmaps && cp ./squashfs-root/yuzu.svg ./squashfs-root/usr/share/pixmaps
-mv /tmp/update/AppRun $HOME/squashfs-root/
-mv /tmp/update/update.sh $HOME/squashfs-root/
+mkdir -p squashfs-root/usr/optional/ ; mkdir -p squashfs-root/usr/optional/libstdc++/
+curl -sL "https://raw.githubusercontent.com/qurious-pixel/yuzu/$branch/.travis/appimage/update.sh" -o $HOME/squashfs-root/update.sh
+curl -sL "https://raw.githubusercontent.com/qurious-pixel/yuzu/$branch/.travis/appimage/AppRun" -o $HOME/squashfs-root/AppRun
+curl -sL "https://github.com/RPCS3/AppImageKit-checkrt/releases/download/continuous2/AppRun-patched-x86_64" -o $HOME/squashfs-root/AppRun-patched
+curl -sL "https://github.com/RPCS3/AppImageKit-checkrt/releases/download/continuous2/exec-x86_64.so" -o $HOME/squashfs-root/usr/optional/exec.so
+chmod a+x ./squashfs-root/AppRun-patched
 chmod a+x ./squashfs-root/runtime
 chmod a+x ./squashfs-root/AppRun
 chmod a+x ./squashfs-root/update.sh
-cp /tmp/libssl.so.47 /tmp/libcrypto.so.45 /usr/lib/x86_64-linux-gnu/
+cp /tmp/update/libssl.so.47 /tmp/update/libcrypto.so.45 /usr/lib/x86_64-linux-gnu/
+cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6 squashfs-root/usr/optional/libstdc++/
+cp /tmp/zen/zenity squashfs-root/usr/bin/
+printf "#include <bits/stdc++.h>\nint main(){std::make_exception_ptr(0);std::pmr::get_default_resource();}" | $CXX -x c++ -std=c++2a -o $HOME/squashfs-root/usr/optional/checker -
 
 echo $TRAVIS_COMMIT > $HOME/squashfs-root/version.txt
 
