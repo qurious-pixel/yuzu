@@ -5,6 +5,7 @@ branch=pineapple
 BUILDBIN=/tmp/source/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
 LOG_FILE=$HOME/curl.log
+CXX=g++-10
 
 # QT 5.14.2
 # source /opt/qt514/bin/qt514-env.sh
