@@ -5,6 +5,10 @@ branch=master-test
 chown -R 1027:1027 /yuzu
 ln -s /home/yuzu/.conan /root
 
+#APT
+apt-get update
+apt install -y libgl-dev 
+
 cd /yuzu
 
 mkdir build && cd build
