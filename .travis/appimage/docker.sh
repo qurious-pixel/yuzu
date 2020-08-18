@@ -7,7 +7,7 @@ ln -s /home/yuzu/.conan /root
 
 #APT
 apt-get update
-apt install -y libopengl0
+apt install -y libopengl0 libxcb-glx0-dev libglvnd-dev libegl1-mesa-dev libgl1-mesa-dev libgles2-mesa-dev libglvnd-core-dev
 
 cd /yuzu
 
