@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-branch=master
+branch=$TRAVIS_BRANCH
 
 BUILDBIN=/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
