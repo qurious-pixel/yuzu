@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-branch=pineapple
+branch=$TRAVIS_BRANCH
 
 BUILDBIN=/tmp/source/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
