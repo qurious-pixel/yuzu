@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-branch=master
+branch=$TRAVIS_BRANCH
 
 chown -R 1027:1027 /yuzu
 ln -s /home/yuzu/.conan /root
