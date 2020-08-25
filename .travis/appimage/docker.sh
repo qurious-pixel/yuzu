@@ -5,9 +5,29 @@ branch=master-test
 chown -R 1027:1027 /yuzu
 ln -s /home/yuzu/.conan /root
 
-#APT
-apt-get update
-apt install -y libopengl0 libxcb-glx0-dev libglvnd-dev libegl1-mesa-dev libgl1-mesa-dev libgles2-mesa-dev libglvnd-core-dev libglew-dev
+#############################
+cd /tmp
+
+VULKANVER=1.2.150
+
+	curl -sL -o Vulkan-Headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/v${VULKANVER}.tar.gz 	
+	tar -xzf Vulkan-Headers*.tar.gz 
+	cd Vulkan-Headers*/ 
+	mkdir build && cd build 
+	cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$GCC_BINARY -DCMAKE_CXX_COMPILER=$GXX_BINARY -DCMAKE_INSTALL_PREFIX=/usr 
+	ninja 
+	ninja install 
+	cd /tmp
+	
+	curl -sL -o Vulkan-Loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/v${VULKANVER}.tar.gz 
+	tar -xzf Vulkan-Loader.tar.gz 
+	cd Vulkan-Loader*/
+	mkdir build && cd build 
+	cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$GCC_BINARY -DCMAKE_CXX_COMPILER=$GXX_BINARY -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_DATADIR=/share 
+	ninja 
+	ninja install 
+
+###########################
 
 cd /yuzu
 
