@@ -1,8 +1,8 @@
 #!/bin/bash -ex
 
-branch=master-test
+branch=$TRAVIS_BRANCH
 
-BUILDBIN=/yuzu/build/bin
+BUILDBIN=/yuzu/yuzu-mainline/build/bin
 BINFILE=yuzu-x86_64.AppImage
 LOG_FILE=$HOME/curl.log
 CXX=g++-10
