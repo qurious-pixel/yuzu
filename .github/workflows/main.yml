@@ -2,4 +2,4 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '20 22 * * *'
+    - cron: '26 22 * * *'
