@@ -1,7 +1,7 @@
 workflow "Travis CI" {
   on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 22 * * *"
   resolves = ["Travis CI"]
 }
 
