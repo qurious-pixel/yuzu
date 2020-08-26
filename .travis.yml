@@ -12,7 +12,8 @@ matrix:
           packages:
             - p7zip-full
       git:
-        clone: false      
+        clone: true
+        submodules: false
       install: 
        - docker pull quriouspixel/yuzu:latest
       script: 
