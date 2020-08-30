@@ -28,59 +28,14 @@ matrix:
       branches:
   except:
     - /^(?i:continuous.*)$/
-    #- os: linux
-    # env: NAME="clang-format"
-    #  sudo: required
-    #  dist: trusty
-    #  services: docker
-    #  install: "./.travis/clang-format/deps.sh"
-    #  script: "./.travis/clang-format/build.sh"
-    #- os: linux
-    #  env: NAME="linux build"
-    #  sudo: required
-    #  dist: trusty
-    #  services: docker
-    #  addons:
-    #    apt:
-    #      packages:
-    #        - p7zip-full
-    #  install: "./.travis/linux/deps.sh"
-    #  script: "./.travis/linux/build.sh"
-    #  after_success: "./.travis/linux/upload.sh"
-    #  cache: ccache
-    #- os: osx
-    #  env: NAME="macos build"
-    #  sudo: false
-    #  osx_image: xcode10.2
-    #  install: "./.travis/macos/deps.sh"
-    #  script: "./.travis/macos/build.sh"
-    #  after_success: "./.travis/macos/upload.sh"
-    #  cache: ccache
-    #- os: linux
-    #  env: NAME="MinGW build"
-    #  sudo: required
-    #  dist: trusty
-    #  services: docker
-    #  addons:
-    #    apt:
-    #      packages:
-    #        - p7zip-full
-    #  install: "./.travis/linux-mingw/deps.sh"
-    #  script: "./.travis/linux-mingw/build.sh"
-    #  after_success: "./.travis/linux-mingw/upload.sh"
-    #  cache: ccache
-
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
 #  secure: 
   file_glob: true
   file: "artifacts/*"
+  overwrite: true
+  prerelease: true
   skip_cleanup: true
   on:
     tags: true
-
-#notifications:
-#  webhooks:
-#    urls:
-#      - https://api.yuzu-emu.org/code/travis/notify
