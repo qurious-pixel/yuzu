@@ -22,6 +22,12 @@ build_script:
     
     dotnet publish -c Release -r win-x64
     
+    dir
+    
+    <# comments 
+    
+    c:\python27\python.exe -m pip install --upgrade pip
+    
     pip install conan
     
     cd c:\projects\yuzu
@@ -42,11 +48,13 @@ build_script:
     
     cmake -G "Visual Studio 16 2019" -A x64 ../
     
-    dotnet publish -c Release -r win-x64
-    
-    
+    dotnet publish yuzu.sln -c Release -r win-x64
     
     dir
+    
+    #>
+    
+    
     
 artifacts:
 - path: yuzu-windows
