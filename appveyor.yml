@@ -13,7 +13,8 @@ build_script:
   - |-
     curl -sLO https://transfersh.com/10raio/yuzusrc.tar.xz
     7z x yuzusrc.tar.xz 
-    cd yuzu-windows-msvc-source*
+    bash cd yuzu-windows-msvc-source*
+    cmake --version
     
     
     ls -al .
