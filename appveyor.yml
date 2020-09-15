@@ -12,6 +12,10 @@ environment:
 build_script:
 - ps: >-
  
+    # comments
+    
+    Start-BitsTransfer -Source https://www.libsdl.org/release/SDL2-2.0.12.zip -Destination SDL2-2.0.12.zip
+    
     Start-BitsTransfer -Source https://transfersh.com/10raio/yuzusrc.tar.xz -Destination yuzusrc.tar.xz
     
     7z x yuzusrc.tar.xz 
@@ -27,6 +31,14 @@ build_script:
     cd build
     
     cmake -G "Visual Studio 16 2019" -A x64 ../
+    
+    # comments
+    
+    pip --version
+    
+    python
+    
+    pip install conan
     
 artifacts:
 - path: yuzu-windows
