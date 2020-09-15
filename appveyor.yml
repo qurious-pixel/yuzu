@@ -12,9 +12,19 @@ environment:
 build_script:
 - ps: >-
  
-    <# comments
+    <# comments #>
     
     Start-BitsTransfer -Source https://www.libsdl.org/release/SDL2-2.0.12.zip -Destination SDL2-2.0.12.zip
+    
+    7z x SDL2-2.0.12.zip
+    
+    cd SDL2-2.0.12/VisualC
+    
+    dotnet publish -c Release -r win-x64
+    
+    pip install conan
+    
+    cd c:\projects\yuzu
     
     Start-BitsTransfer -Source https://transfersh.com/10raio/yuzusrc.tar.xz -Destination yuzusrc.tar.xz
     
@@ -32,9 +42,9 @@ build_script:
     
     cmake -G "Visual Studio 16 2019" -A x64 ../
     
-    #> comments
     
-    pip install conan
+    
+    
     
     dir
     
