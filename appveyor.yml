@@ -16,6 +16,8 @@ build_script:
     
     7z x yuzusrc.tar.xz 
     
+    7z x yuzusrc.tar
+    
     CD yuzu-windows-msvc-source*
     
     dir
