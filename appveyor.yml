@@ -19,10 +19,7 @@ build_script:
     7z x yuzusrc.tar.xz 
     CD yuzu-windows-msvc-source*
     cmake --version
-    
-    
-    
-    ls -al .
+    dir
     
 artifacts:
 - path: yuzu-windows
