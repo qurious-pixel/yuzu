@@ -12,7 +12,7 @@ environment:
 build_script:
 - ps: >-
  
-    # comments
+    <# comments
     
     Start-BitsTransfer -Source https://www.libsdl.org/release/SDL2-2.0.12.zip -Destination SDL2-2.0.12.zip
     
@@ -32,13 +32,11 @@ build_script:
     
     cmake -G "Visual Studio 16 2019" -A x64 ../
     
-    # comments
-    
-    pip --version
-    
-    python
+    #> comments
     
     pip install conan
+    
+    dir
     
 artifacts:
 - path: yuzu-windows
