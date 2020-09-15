@@ -12,13 +12,12 @@ environment:
 build_script:
 - ps: >-
     
-    -bash: curl -sLO https://transfersh.com/10raio/yuzusrc.tar.xz
+    -bash: curl -sLO 
+    Start-BitsTransfer -Source https://transfersh.com/10raio/yuzusrc.tar.xz -Destination yuzusrc.tar.xz
     
     7z x yuzusrc.tar.xz 
     
     CD yuzu-windows-msvc-source*
-    
-    cmake --version
     
     dir
     
