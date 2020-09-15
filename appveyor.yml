@@ -11,13 +11,8 @@ environment:
       config_name: '-'
 build_script:
 - ps: >-
-    msiexec --help
     
-    curl -SLO https://github.com/Kitware/CMake/releases/download/v3.18.2/cmake-3.18.2-win64-x64.msi
-    
-    msiexec.exe /I cmake-3.18.2-win64-x64.msi
-    
-    curl -sLO https://transfersh.com/10raio/yuzusrc.tar.xz
+    -bash: curl -sLO https://transfersh.com/10raio/yuzusrc.tar.xz
     
     7z x yuzusrc.tar.xz 
     
