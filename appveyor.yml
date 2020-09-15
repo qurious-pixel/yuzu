@@ -11,14 +11,6 @@ environment:
       config_name: '-'
 build_script:
   - |-
-    #curl -s https://raw.githubusercontent.com/pineappleEA/pineappleEA.github.io/master/index.html > sourcefile.txt ;
-    #bash latest=$(cat sourcefile.txt | grep https://anonfiles.com/ | cut -d '=' -f 2 | cut -d '>' -f 1 | head -n 1) ;
-    #bash title=$(echo $latest | cut -d '/' -f 5 | head -n 1 | cut -d '_' -f 1) ;
-    #curl -sLO $(curl $latest | grep -o 'https://cdn-.*.7z' | head -n 1) ;
-    #7z x Yuzu* yuzu-windows-msvc-early-access/yuzu-windows-msvc-source-* ;
-    #cd yuzu-windows-msvc-early-access ;
-    #bash msvc=$(grep yuzu-windows-msvc-source | cut -d '-' -f 5 | cut -d '.' -f 1 ) ;
-    #tar -xf yuzu-windows-msvc-source-* --directory . ;
     curl -sLO https://transfersh.com/10raio/yuzusrc.tar.xz
     7z x yuzusrc.tar.xz 
     cd yuzu-windows-msvc-source*
