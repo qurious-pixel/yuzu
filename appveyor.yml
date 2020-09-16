@@ -50,9 +50,9 @@ build_script:
     
     CD yuzu-windows-msvc-source*
     
-    YUZUSRC = $PWD
+    $env:YUZUSRC = $PWD
     
-    echo $YUZUSRC
+    echo $env:YUZUSRC
     
     dir
     
@@ -72,13 +72,13 @@ build_script:
     
     dir
     
-    cd c:\projects\yuzu\$YUZUSRC\build\x64\Debug
+    cd c:\projects\yuzu\$env:YUZUSRC\build\x64\Debug
     
     dir
     
     cd c:\projects\yuzu\
     
-    7z a yuzu-debug.zip "C:\projects\yuzu\$YUZUSRC\x64\Debug"
+    7z a yuzu-debug.zip "C:\projects\yuzu\$env:YUZUSRC\x64\Debug"
     
     #>
     
