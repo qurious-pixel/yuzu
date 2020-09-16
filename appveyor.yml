@@ -70,13 +70,13 @@ build_script:
     
     dir
     
-    cd $env:YUZUSRC\build\x64\Debug
+    cd $env:YUZUSRC\build\bin\Debug
     
     dir
     
     cd $env:YUZUSRC
     
-    7z a yuzu-debug.zip "build\x64\Debug"
+    7z a yuzu-debug.zip "build\bin\Debug"
     
     mv yuzu-debug.zip c:\projects\yuzu
     
