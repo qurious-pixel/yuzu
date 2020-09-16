@@ -20,11 +20,11 @@ build_script:
     
     dir
     
-    echo "echo $VCTargetsPath"
+    $Env:VCTargetsPath
     
-    Set-Variable -Name "VCTargetsPath" -Value "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160"
+    $Env:VCTargetsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160"
     
-    echo "echo $VCTargetsPath"
+    $Env:VCTargetsPath
     
     cd "C:\projects\yuzu"
     
