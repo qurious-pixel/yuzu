@@ -56,7 +56,7 @@ build_script:
     
     cd build
     
-    cmake -G "Visual Studio 16 2019" -A x64 ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
+    cmake -G "Visual Studio 16 2019" -A x64 --config Release -DYUZU_USE_BUNDLED_QT=1 -DYUZU_USE_BUNDLED_UNICORN=1 -DYUZU_USE_QT_WEB_ENGINE=ON -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON ../
     
     msbuild yuzu.sln 
     
@@ -70,11 +70,15 @@ build_script:
     
     dir
     
+    cd ..\exports
+    
+    dir
+    
     cd ..\x64
     
     dir
     
-    cd ..\exports
+    cd ..\x64\Release
     
     dir
     
