@@ -24,7 +24,7 @@ build_script:
     
     $VCTargetsPath = "$Env:VCTargetsPath"
 
-    #vcpkg install --triplet x64-windows sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf
+    vcpkg install --triplet x64-windows sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf
         
     c:\python27\python.exe -m pip install --upgrade pip
     
