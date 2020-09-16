@@ -16,7 +16,7 @@ build_script:
  
     <# comments #>
     
-    cd "C:\Program Files\MSBuild\Microsft\VC\"
+    cd "C:\Program Files\MSBuild\Microsoft\VC\"
     
     dir
     
