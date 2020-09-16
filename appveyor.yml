@@ -20,11 +20,11 @@ build_script:
     
     echo "echo $VCTargetsPath"
     
-    cd "c:\"
+    cd "c:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0"
     
     dir
     
-    cd "C:\Program Files (x86)\MSBuild\Microsoft.Cpp\"
+    cd "C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\v110"
     
     dir
     
