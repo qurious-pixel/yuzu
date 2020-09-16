@@ -4,6 +4,8 @@ branches:
   - master
   - pineapple-win
 image: Visual Studio 2019
+cache:
+  - C:\Users\appveyor\.conan\ -> appveyor.yml
 environment:
   #appveyor_dotnet_runtime: netcoreapp3.1
   matrix:
@@ -30,7 +32,7 @@ build_script:
     
     c:\python27\python.exe -m pip install --upgrade pip
     
-    pip install conan
+    pip3 install conan
     
     cd c:\projects\yuzu
     
