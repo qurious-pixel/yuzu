@@ -70,17 +70,21 @@ build_script:
     
     dir
     
-    cd $env:YUZUSRC\build\bin\Debug
+    cd $env:YUZUSRC\build\bin\
+    
+    dir
+    
+    cd $env:YUZUSRC\build\bin\Release
     
     dir
     
     cd $env:YUZUSRC
     
-    7z a yuzu-debug.zip "build\bin\Debug"
+    7z a yuzu-release.zip "build\bin\Release"
     
-    mv yuzu-debug.zip c:\projects\yuzu
+    mv yuzu-release.zip c:\projects\yuzu
     
     #>
     
 artifacts:
-- path: yuzu-debug.zip
+- path: yuzu-release.zip
