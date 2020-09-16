@@ -16,21 +16,11 @@ build_script:
  
     <# comments #>
     
-    cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160"
-    
-    dir
+
     
     $Env:VCTargetsPath
     
-    $Env:VCTargetsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160"
-    
-    $Env:VCTargetsPath
-    
-    cd "C:\projects\yuzu"
-    
-    cd $(VCTargetsPath)
-    
-    dir
+
     
     <# comments
     
