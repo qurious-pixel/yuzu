@@ -24,6 +24,8 @@ build_script:
     
     7z x SDL2-devel-2.0.12-VC.zip
     
+    cp "C:\projects\yuzu\externals\sdl2-config.cmake" "C:\projects\yuzu\SDL2-2.0.12\"
+    
     $Env:SDL2_DIR = "C:\projects\yuzu\SDL2-2.0.12\"
     
     $SDL2_DIR = $Env:SDL2_DIR
