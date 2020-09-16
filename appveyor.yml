@@ -16,7 +16,7 @@ build_script:
     
     echo "echo $VCTargetsPath"
     
-    Set-Variable -Name "VCTargetsPath" -Value "c:\program files\msbuild\microsoft"
+    Set-Variable -Name "VCTargetsPath" -Value "C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\v140"
     
     echo "echo $VCTargetsPath"
     
@@ -24,7 +24,7 @@ build_script:
     
     dir
     
-    cd "C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\v110"
+    cd "C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\v140"
     
     dir
     
