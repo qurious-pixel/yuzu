@@ -48,7 +48,9 @@ build_script:
     
     7z x yuzusrc.tar
     
-    CD yuzu-windows-msvc-source*
+    Rename-Item -path "C:\projects\yuzu\yuzu-windows-msvc-source*\" -newName yuzu-windows-msvc-source
+    
+    CD yuzu-windows-msvc-source
     
     dir
     
@@ -66,13 +68,13 @@ build_script:
     
     dir
     
-    cd c:\projects\yuzu\build\x64\Debug
+    cd c:\projects\yuzu\yuzu-windows-msvc-source\build\x64\Debug
     
     dir
     
     cd c:\projects\yuzu\
     
-    7z a yuzu-debug.zip "C:\projects\yuzu\build\x64\Debug"
+    7z a yuzu-debug.zip "C:\projects\yuzu\yuzu-windows-msvc-source\x64\Debug"
     
     #>
     
