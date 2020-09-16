@@ -20,7 +20,9 @@ build_script:
     
     $Env:VCTargetsPath
     
-    cd $Env:VCTargetsPath
+    cd $VCTargetsPath
+    
+    $VCTargetsPath = "$Env:VCTargetsPath"
     
     cd $VCTargetsPath
     
