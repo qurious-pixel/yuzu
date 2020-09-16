@@ -8,6 +8,7 @@ cache:
   - C:\Users\appveyor\.conan\ 
   - C:\Users\appveyor\AppData\Local\vcpkg
   - C:/Tools/vcpkg/packages
+  - c:\python27\
 environment:
   #appveyor_dotnet_runtime: netcoreapp3.1
   matrix:
@@ -45,13 +46,13 @@ build_script:
     
     cd build
     
-    #cmake -G "Visual Studio 16 2019" -A x64 ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
+    cmake -G "Visual Studio 16 2019" -A x64 ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
     
-    #msbuild yuzu.sln 
+    msbuild yuzu.sln 
     
-    cmake -GNinja ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
+    #cmake -GNinja ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
     
-    ninja
+    #ninja
     
     dir
     
