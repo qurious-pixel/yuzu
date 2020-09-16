@@ -6,6 +6,8 @@ branches:
 image: Visual Studio 2019
 cache:
   - C:\Users\appveyor\.conan\ 
+  - C:\Users\appveyor\AppData\Local\vcpkg
+  - C:/Tools/vcpkg/
 environment:
   #appveyor_dotnet_runtime: netcoreapp3.1
   matrix:
