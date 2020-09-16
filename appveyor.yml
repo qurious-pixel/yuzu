@@ -5,7 +5,7 @@ branches:
   - pineapple-win
 image: Visual Studio 2019
 cache:
-  - C:\Users\appveyor\.conan\ -> appveyor.yml
+  - C:\Users\appveyor\.conan\ 
 environment:
   #appveyor_dotnet_runtime: netcoreapp3.1
   matrix:
@@ -15,6 +15,10 @@ build_script:
 - ps: >-
  
     <# comments #>
+    
+    vcpkg search sdl2
+    
+    <# comments
     
     $Env:VCTargetsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\"
     
@@ -64,6 +68,7 @@ build_script:
     
     dir
     
+    #>
     
 artifacts:
 - path: bin\yuzu.exe
