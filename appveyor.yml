@@ -14,24 +14,10 @@ build_script:
  
     <# comments #>
     
-    echo "echo $VCTargetsPath"
-    
     Set-Variable -Name "VCTargetsPath" -Value "C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\v140"
     
     echo "echo $VCTargetsPath"
-    
-    cd "c:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0"
-    
-    dir
-    
-    cd "C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\v140"
-    
-    dir
-    
-    <# comments
-    
-    npm install -g --production windows-build-tools
-    
+
     Start-BitsTransfer -Source https://www.libsdl.org/release/SDL2-2.0.12.zip -Destination SDL2-2.0.12.zip
     
     7z x SDL2-2.0.12.zip
@@ -68,7 +54,6 @@ build_script:
     
     dir
     
-    #>
     
     
     
