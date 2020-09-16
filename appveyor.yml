@@ -74,6 +74,10 @@ build_script:
     
     dir
     
+    cd ..\exports
+    
+    dir
+    
     #>
     
 artifacts:
