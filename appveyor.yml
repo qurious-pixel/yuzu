@@ -16,11 +16,15 @@ build_script:
     
     echo "echo $VCTargetsPath"
     
-    set VCTargetsPath="c:\program files\msbuild\microsoft"
+    SET VCTargetsPath="c:\program files\msbuild\microsoft"
     
     echo "echo $VCTargetsPath"
     
-    cd "c:\program files\msbuild\microsoft"
+    cd "c:\program files\msbuild\microsoft\Windows Workflow Foundation"
+    
+    dir
+    
+    cd "c:\program files\Microsoft Visual Studio 10.0"
     
     dir
     
