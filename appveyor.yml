@@ -16,14 +16,6 @@ build_script:
  
     <# comments #>
     
-    <# comments
-    
-    cd "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/"
-    
-    dir
-    
-    #>
-    
     $Env:VCTargetsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\"
     
     $VCTargetsPath = "$Env:VCTargetsPath"
@@ -64,8 +56,14 @@ build_script:
     
     dir
     
+    cd bin
     
+    dir
+    
+    cd ..\x64
+    
+    dir
     
     
 artifacts:
-- path: yuzu-windows
+- path: bin\yuzu.exe
