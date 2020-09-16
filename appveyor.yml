@@ -23,7 +23,7 @@ build_script:
     
     $VCTargetsPath = "$Env:VCTargetsPath"
 
-    vcpkg install --triplet x64-windows sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf
+    #vcpkg install --triplet x64-windows sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf
         
     c:\python27\python.exe -m pip install --upgrade pip
     
@@ -45,9 +45,13 @@ build_script:
     
     cd build
     
-    cmake -G "Visual Studio 16 2019" -A x64 ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON 
+    #cmake -G "Visual Studio 16 2019" -A x64 ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
     
-    msbuild yuzu.sln 
+    #msbuild yuzu.sln 
+    
+    cmake -GNinja ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
+    
+    ninja
     
     dir
     
