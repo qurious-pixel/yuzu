@@ -14,15 +14,13 @@ build_script:
  
     <# comments #>
     
-    echo $VCTargetsPath
+    echo "echo $VCTargetsPath"
     
-    dir
+    set VCTargetsPath="c:\program files\msbuild\microsoft"
     
-    cd "c:\program files\"
+    echo "echo $VCTargetsPath"
     
-    dir 
-    
-    cd "c:\program files\msbuild"
+    cd "c:\program files\msbuild\microsoft"
     
     dir
     
