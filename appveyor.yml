@@ -18,21 +18,7 @@ build_script:
     
     $Env:VCTargetsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160"
     
-    $Env:VCTargetsPath
-    
-    cd $VCTargetsPath
-    
     $VCTargetsPath = "$Env:VCTargetsPath"
-    
-    cd $VCTargetsPath
-    
-    dir
-    
-    <# comments
-    
-    Set-Variable -Name "VCTargetsPath" -Value "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160"
-    
-    echo "echo $VCTargetsPath"
 
     Start-BitsTransfer -Source https://www.libsdl.org/release/SDL2-2.0.12.zip -Destination SDL2-2.0.12.zip
     
@@ -70,7 +56,7 @@ build_script:
     
     dir
     
-    #>
+
     
     
 artifacts:
