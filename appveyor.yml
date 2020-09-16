@@ -20,11 +20,11 @@ build_script:
     
     echo "echo $VCTargetsPath"
     
-    cd "c:\program files\Microsoft Visual Studio 10.0\common7\IDE\PrivateAssemblies"
+    cd "c:\"
     
     dir
     
-    cd "c:\program files\Microsoft Visual Studio 10.0\common7\IDE"
+    cd "C:\Program Files (x86)\MSBuild\Microsoft.Cpp\"
     
     dir
     
