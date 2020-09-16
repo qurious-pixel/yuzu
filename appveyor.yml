@@ -20,7 +20,11 @@ build_script:
     
     $Env:VCTargetsPath
     
-
+    cd $Env:VCTargetsPath
+    
+    cd $VCTargetsPath
+    
+    dir
     
     <# comments
     
