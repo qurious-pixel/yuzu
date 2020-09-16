@@ -14,13 +14,15 @@ build_script:
  
     <# comments #>
     
+    npm install -g --production windows-build-tools
+    
     Start-BitsTransfer -Source https://www.libsdl.org/release/SDL2-2.0.12.zip -Destination SDL2-2.0.12.zip
     
     7z x SDL2-2.0.12.zip
     
-    cd SDL2-2.0.12/VisualC/
+    cd SDL2-2.0.12/VisualC/SDL
     
-    dotnet publish SDL.sln -c Release -r win-x64
+    dotnet publish -c Release -r win-x64
     
     dir
     
