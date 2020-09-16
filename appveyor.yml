@@ -60,7 +60,7 @@ build_script:
     
     cd build
             
-    cmake -G "Visual Studio 16 2019" -A x64 --config Release -DYUZU_USE_BUNDLED_QT=1 -DYUZU_USE_BUNDLED_UNICORN=1 -DYUZU_USE_QT_WEB_ENGINE=ON -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON ../
+    cmake -G "Visual Studio 16 2019" -A x64 --config Release -DYUZU_USE_BUNDLED_QT=1 -DYUZU_USE_BUNDLED_UNICORN=1 -DYUZU_USE_QT_WEB_ENGINE=ON -DUSE_DISCORD_PRESENCE=ON -DDISPLAY_VERSION=999 -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON ../
     
     msbuild yuzu.sln /p:Configuration=Release
     
@@ -68,19 +68,15 @@ build_script:
     
     #ninja
     
+    cd $env:YUZUSRC\build\bin\Release
+    
+    rm *.pdb
+    
     dir
     
     cd $env:YUZUSRC\build\bin\
     
-    dir
-    
-    cd $env:YUZUSRC\build\bin\Release
-    
-    dir
-    
-    cd $env:YUZUSRC
-    
-    7z a yuzu-release.zip "build\bin\Release"
+    7z a yuzu-release.zip "Release"
     
     mv yuzu-release.zip c:\projects\yuzu
     
