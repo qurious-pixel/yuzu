@@ -20,6 +20,14 @@ build_script:
     <# comments #>
     
     
+    Start-BitsTransfer -Source https://libsdl.org/release/SDL2-devel-2.0.12-VC.zip -Destination SDL2-devel-2.0.12-VC.zip
+    
+    7z x SDL2-devel-2.0.12-VC.zip
+    
+    $Env:SDL_DIR = "C:\projects\yuzu\SDL2-2.0.12\"
+    
+    $SDL_DIR = $Env:SDL_DIR
+    
     $Env:VCTargetsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\"
     
     $VCTargetsPath = "$Env:VCTargetsPath"
