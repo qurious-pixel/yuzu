@@ -18,9 +18,9 @@ build_script:
     
     7z x SDL2-2.0.12.zip
     
-    cd SDL2-2.0.12/VisualC/SDL
+    cd SDL2-2.0.12/VisualC/
     
-    dotnet publish -c Release -r win-x64
+    dotnet publish SDL.sln -c Release -r win-x64
     
     dir
     
