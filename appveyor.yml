@@ -16,11 +16,13 @@ build_script:
  
     <# comments #>
     
+    <# comments
+    
     cd "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/"
     
     dir
     
-    <# comments
+    #>
     
     $Env:VCTargetsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\"
     
@@ -62,7 +64,7 @@ build_script:
     
     dir
     
-    #>
+    
     
     
 artifacts:
