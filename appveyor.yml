@@ -16,7 +16,7 @@ build_script:
  
     <# comments #>
     
-    vcpkg install sdl2:x64-windows
+    vcpkg install --triplet x64-windows sdl2
     
     <# comments
     
