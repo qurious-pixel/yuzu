@@ -60,7 +60,7 @@ build_script:
     
     cmake -G "Visual Studio 16 2019" -A x64 ../
     
-    dotnet publish yuzu.sln -c Release -r win-x64
+    msbuild yuzu.sln 
     
     dir
     
