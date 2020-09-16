@@ -14,6 +14,18 @@ build_script:
  
     <# comments #>
     
+    dir
+    
+    cd c:\program files\
+    
+    dir 
+    
+    cd c:\program files\msbuild
+    
+    dir
+    
+    <# comments
+    
     npm install -g --production windows-build-tools
     
     Start-BitsTransfer -Source https://www.libsdl.org/release/SDL2-2.0.12.zip -Destination SDL2-2.0.12.zip
@@ -25,8 +37,6 @@ build_script:
     dotnet publish -c Release -r win-x64
     
     dir
-    
-    <# comments 
     
     c:\python27\python.exe -m pip install --upgrade pip
     
