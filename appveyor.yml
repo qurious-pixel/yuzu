@@ -46,11 +46,9 @@ build_script:
     
     7z x yuzusrc.tar.xz 
     
-    7z x yuzusrc.tar
+    7z x yuzusrc.tar -o"yuzu-windows-msvc-source"
     
-    CD yuzu-windows-msvc-source*
-    
-    Rename-Item -path "$PWD" -newName yuzu-windows-msvc-source
+    CD yuzu-windows-msvc-source
     
     dir
     
