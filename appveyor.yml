@@ -16,7 +16,7 @@ build_script:
  
     <# comments #>
     
-    vcpkg install --target x64-windows sdl2 
+    vcpkg install sdl2:x64-windows
     
     <# comments
     
