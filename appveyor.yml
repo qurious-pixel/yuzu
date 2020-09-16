@@ -7,7 +7,7 @@ image: Visual Studio 2019
 cache:
   - C:\Users\appveyor\.conan\ 
   - C:\Users\appveyor\AppData\Local\vcpkg
-  - C:/Tools/vcpkg/
+  - C:/Tools/vcpkg/packages
 environment:
   #appveyor_dotnet_runtime: netcoreapp3.1
   matrix:
@@ -18,24 +18,13 @@ build_script:
  
     <# comments #>
     
-    vcpkg install --triplet x64-windows sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf
-    
-    <# comments
     
     $Env:VCTargetsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\"
     
     $VCTargetsPath = "$Env:VCTargetsPath"
 
-    Start-BitsTransfer -Source https://www.libsdl.org/release/SDL2-2.0.12.zip -Destination SDL2-2.0.12.zip
-    
-    7z x SDL2-2.0.12.zip
-    
-    cd SDL2-2.0.12/VisualC/SDL
-    
-    dotnet publish -c Release -r win-x64
-    
-    dir
-    
+    vcpkg install --triplet x64-windows sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf
+        
     c:\python27\python.exe -m pip install --upgrade pip
     
     pip install conan
@@ -56,7 +45,7 @@ build_script:
     
     cd build
     
-    cmake -G "Visual Studio 16 2019" -A x64 ../
+    cmake -G "Visual Studio 16 2019" -A x64 ../ -DCMAKE_BUILD_TYPE=Release -DUSE_DISCORD_PRESENCE=ON 
     
     msbuild yuzu.sln 
     
