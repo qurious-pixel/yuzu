@@ -59,9 +59,7 @@ build_script:
     mkdir build
     
     cd build
-    
-    echo $env:YUZUSRC
-    
+            
     cmake -G "Visual Studio 16 2019" -A x64 --config Release -DYUZU_USE_BUNDLED_QT=1 -DYUZU_USE_BUNDLED_UNICORN=1 -DYUZU_USE_QT_WEB_ENGINE=ON -DUSE_DISCORD_PRESENCE=ON -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON ../
     
     msbuild yuzu.sln 
@@ -72,13 +70,15 @@ build_script:
     
     dir
     
-    cd c:\projects\yuzu\$env:YUZUSRC\build\x64\Debug
+    cd $env:YUZUSRC\build\x64\Debug
     
     dir
     
-    cd c:\projects\yuzu\
+    cd $env:YUZUSRC
     
-    7z a yuzu-debug.zip "C:\projects\yuzu\$env:YUZUSRC\x64\Debug"
+    7z a yuzu-debug.zip "build\x64\Debug"
+    
+    mv yuzu-debug.zip c:\projects\yuzu
     
     #>
     
