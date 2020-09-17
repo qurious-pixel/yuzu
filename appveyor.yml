@@ -19,9 +19,6 @@ build_script:
  
     <# comments #>
     
-    wsl patch --help
-    
-    <# comments
     
     Start-BitsTransfer -Source https://libsdl.org/release/SDL2-devel-2.0.12-VC.zip -Destination SDL2-devel-2.0.12-VC.zip
     
