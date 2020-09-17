@@ -56,7 +56,7 @@ build_script:
             
     Start-BitsTransfer -Source https://raw.githubusercontent.com/PineappleEA/Pineapple-Linux/master/inject-git-info.patch -Destination inject-git-info.patch
 
-    #dos2unix inject-git-info.patch
+    unix2dos -v inject-git-info.patch
     
     wsl patch -p1 -l -i inject-git-info.patch
     
