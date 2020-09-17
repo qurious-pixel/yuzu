@@ -19,7 +19,7 @@ build_script:
  
     <# comments #>
     
-    bash patch --help
+    wsl patch --help
     
     <# comments
     
