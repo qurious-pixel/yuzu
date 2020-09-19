@@ -20,7 +20,7 @@ matrix:
        - mkdir -p "$HOME/.ccache"
        - docker run -u root -e ENABLE_COMPATIBILITY_REPORTING --env-file .travis/common/travis-ci.env -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache --name yuzu_appimage quriouspixel/yuzu:latest /bin/bash /yuzu/.travis/appimage/docker.sh
       after_success:
-      - export UPLOADTOOL_SUFFIX=$DATE
+      - export UPLOADTOOL_SUFFIX=$(date +%Y%m%d)
       - ls -al artifacts/
       - cd artifacts/
       #- wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
