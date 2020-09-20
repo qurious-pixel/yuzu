@@ -23,11 +23,13 @@ matrix:
       #- export UPLOADTOOL_SUFFIX=$(date +%Y%m%d)
       - ls -al artifacts/
       - cd artifacts/
+      - cp yuzu-x86_64.AppImage yuzu-mainline-102.AppImage
+      - MAINVER=$(ls . | grep mainline)
       #- wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
       - wget -c https://raw.githubusercontent.com/qurious-pixel/yuzu/mainline/.travis/appimage/upload.sh
       - chmod a+x upload.sh
       - bash upload.sh yuzu-x86_64.AppImage* 
-      - UPLOADTOOL_SUFFIX="Ver-101" bash upload.sh yuzu-x86_64.AppImage* 
+      - UPLOADTOOL_SUFFIX=$MAINVER bash upload.sh yuzu-mainline* 
       branches:
   except:
     - /^(?i:continuous.*)$/
