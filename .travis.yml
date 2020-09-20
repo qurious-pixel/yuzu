@@ -24,7 +24,7 @@ matrix:
       - ls -al artifacts/
       - cd artifacts/
       - cp yuzu-x86_64.AppImage yuzu-mainline-102.AppImage
-      - MAINVER=$(ls . | grep mainline)
+      - MAINVER=$(ls . | grep mainline | cut -d "." -f 1 | cut -c 6-20)
       #- wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
       - wget -c https://raw.githubusercontent.com/qurious-pixel/yuzu/mainline/.travis/appimage/upload.sh
       - chmod a+x upload.sh
