@@ -48,9 +48,9 @@ matrix:
       env: NAME="macos build"
       sudo: false
       osx_image: xcode10.1
-      install: "./.travis/macos/deps.sh"
-      script: "./.travis/macos/build.sh"
-      after_success: "./.travis/macos/upload.sh"
+      #install: "./.travis/macos/deps.sh"
+      script: go version
+      #after_success: "./.travis/macos/upload.sh"
     #  cache: ccache
     #- os: linux
     #  env: NAME="MinGW build"
