@@ -23,8 +23,8 @@ matrix:
       - ls -al artifacts/
       - cd artifacts/
       #- export UPLOADTOOL_ISPRERELEASE=true
-      - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-      #- wget -c https://raw.githubusercontent.com/qurious-pixel/yuzu/mainline/.travis/appimage/upload.sh
+      #- wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+      - wget -c https://raw.githubusercontent.com/qurious-pixel/yuzu/mainline/.travis/appimage/upload.sh
       - chmod a+x upload.sh
       - bash upload.sh yuzu-x86_64.AppImage* 
       branches:
@@ -39,5 +39,5 @@ deploy:
   overwrite: true
   prerelease: true
   skip_cleanup: true
-  on:
-    tags: true
+#  on:
+#    tags: true
