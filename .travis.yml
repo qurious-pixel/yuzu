@@ -22,10 +22,8 @@ matrix:
       after_success:
       - ls -al artifacts/
       - curl -sL https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz -o $HOME/ghr_v0.13.0_linux_amd64.tar.gz
-      - ls -al $HOME/
       - chmod a+x $HOME/ghr_v0.13.0_linux_amd64.tar.gz
-      - ls -al $HOME/
-      - tar xfv $HOME/ghr_v0.13.0_linux_amd64.tar.gz
+      - tar -xvf $HOME/ghr_v0.13.0_linux_amd64.tar.gz
       - $HOME/ghr_v0.13.0_linux_amd64/ghr -recreate -n 'Continous build' -b "Travis CI build log ${TRAVIS_BUILD_WEB_URL}" continuous artifacts/
       branches:
   except:
