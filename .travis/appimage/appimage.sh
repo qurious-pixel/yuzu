@@ -2,7 +2,7 @@
 
 branch=$TRAVIS_BRANCH
 
-BUILDBIN=/yuzu/yuzu-mainline/build/bin
+BUILDBIN=/yuzu/yuzu/build/bin
 BINFILE=yuzu-x86_64.AppImage
 LOG_FILE=$HOME/curl.log
 CXX=g++-10
