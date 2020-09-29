@@ -15,7 +15,7 @@ endif()
 
 # Pin build to minimum supported OSX version.
 # 10.15 supports metal 3 so has additional unsupported MVK extensions
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.14.0" CACHE STRING "")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13.0" CACHE STRING "")
 
 # Set bundled sdl2/qt as dependent options.
 # OFF by default, but if ENABLE_SDL2 and MSVC are true then ON
