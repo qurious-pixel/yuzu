@@ -9,7 +9,7 @@ cd /yuzu
 
 git clone -b nvdec-prod --single-branch https://github.com/ameerj/yuzu.git
 ls -al .
-cd yuzu-mainline/
+cd yuzu/
 git submodule update --init --recursive
 
 mkdir build && cd build
