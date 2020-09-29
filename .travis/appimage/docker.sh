@@ -7,7 +7,8 @@ ln -s /home/yuzu/.conan /root
 
 cd /yuzu
 
-git clone https://github.com/yuzu-emu/yuzu-mainline.git
+git clone -b nvdec-prod --single-branch https://github.com/ameerj/yuzu.git
+ls -al .
 cd yuzu-mainline/
 git submodule update --init --recursive
 
