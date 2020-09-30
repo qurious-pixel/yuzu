@@ -1,8 +1,7 @@
 #!/bin/sh -ex
 
-echo 'export PATH="/usr/local/sbin:$PATH"' >> ~/.bash_profile
 #git -C $(brew --repo homebrew/core) fetch --unshallow
-#brew update
+brew update
 #brew cask uninstall --force java
 brew doctor
 brew install p7zip qt5 sdl2 ccache conan ninja ffmpeg llvm boost openssl pulseaudio mbedtls zstd openssl gpm pkgconfig
