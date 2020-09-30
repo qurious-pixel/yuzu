@@ -1,6 +1,9 @@
 #!/bin/sh -ex
 
+export PATH="/usr/local/sbin:$PATH"
+
 #git -C $(brew --repo homebrew/core) fetch --unshallow
+
 brew update
 #brew cask uninstall --force java
 brew doctor
