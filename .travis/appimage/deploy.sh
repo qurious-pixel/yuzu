@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+sudo chown -R travis:travis /home/travis/
+
 ls -al artifacts/
 wget -c https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
 tar xfv ghr_v0.13.0_linux_amd64.tar.gz      
