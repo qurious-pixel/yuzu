@@ -4,7 +4,7 @@ export PATH="/usr/local/sbin:$PATH"
 
 #git -C $(brew --repo homebrew/core) fetch --unshallow
 
-softwareupdate --all --install --force
+#softwareupdate --all --install --force
 
 brew update
 brew cask uninstall --force java
