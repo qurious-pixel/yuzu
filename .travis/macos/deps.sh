@@ -1,5 +1,6 @@
 #!/bin/sh -ex
 
+echo 'export PATH="/usr/local/sbin:$PATH"' >> ~/.bash_profile
 #git -C $(brew --repo homebrew/core) fetch --unshallow
 #brew update
 #brew cask uninstall --force java
