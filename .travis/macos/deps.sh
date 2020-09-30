@@ -1,7 +1,7 @@
 #!/bin/sh -ex
 
 
-git -C "$(brew --repo homebrew/core)" fetch --unshallow
+git https://github.com/Homebrew/homebrew-core.git fetch --unshallow
 brew update
 #brew cask uninstall --force java
 brew install p7zip qt5 sdl2 ccache conan ninja ffmpeg llvm boost
