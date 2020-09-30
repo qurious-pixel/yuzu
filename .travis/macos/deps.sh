@@ -3,7 +3,7 @@
 #git -C $(brew --repo homebrew/core) fetch --unshallow
 #brew update
 #brew cask uninstall --force java
-brew install p7zip qt5 sdl2 ccache conan ninja ffmpeg llvm boost
+brew install p7zip qt5 sdl2 ccache conan ninja ffmpeg llvm boost openssl pulseaudio
 brew outdated cmake || brew upgrade cmake
 #brew upgrade gcc
 pip3 install macpack
