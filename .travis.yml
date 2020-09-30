@@ -23,7 +23,7 @@ matrix:
       - echo "Success!"
 deploy:
   provider: script
-  script: bash .travis/appimage/deploy.sh
+  script: sudo bash .travis/appimage/deploy.sh
   api_key: $GITHUB_TOKEN
 #  secure: 
   file_glob: true
