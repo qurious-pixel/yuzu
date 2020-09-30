@@ -1,6 +1,6 @@
 #!/bin/sh -ex
 
-git fetch -C $(brew --repo homebrew/core) --unshallow
+git -C $(brew --repo homebrew/core) fetch --unshallow
 #ls -al $(brew --repo homebrew/core)
 brew update
 #brew cask uninstall --force java
