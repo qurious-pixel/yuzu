@@ -5,9 +5,9 @@ export PATH="/usr/local/sbin:$PATH"
 #git -C $(brew --repo homebrew/core) fetch --unshallow
 
 #softwareupdate --all --install --force
-brew cask pin java
+#brew cask pin java
 brew pin protobuf
-brew update
+#brew update
 #brew cask uninstall --force java
 brew link gettext
 #brew doctor
