@@ -12,7 +12,7 @@ brew update --force
 #brew cask uninstall --force java
 brew link gettext
 #brew doctor
-brew install p7zip sdl2 ccache conan ninja ffmpeg llvm pulseaudio mbedtls gpm pkgconfig
+#brew install p7zip sdl2 ccache conan ninja ffmpeg llvm pulseaudio mbedtls gpm pkgconfig
 brew upgrade boost qt openssl@1.1 zstd
 brew outdated cmake || brew upgrade cmake
 #brew upgrade gcc
