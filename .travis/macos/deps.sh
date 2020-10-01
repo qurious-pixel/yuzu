@@ -8,7 +8,7 @@ export PATH="/usr/local/sbin:$PATH"
 
 brew update --force
 
-brew install p7zip sdl2 ccache ninja ffmpeg llvm pulseaudio mbedtls gpm pkgconfig
+brew install p7zip sdl2 ccache ninja ffmpeg llvm@9 pulseaudio mbedtls gpm pkgconfig
 brew upgrade qt openssl@1.1 zstd
 #removing boost
 brew outdated cmake || brew upgrade cmake
