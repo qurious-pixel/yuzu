@@ -5,9 +5,10 @@ export PATH="/usr/local/sbin:$PATH"
 #git -C $(brew --repo homebrew/core) fetch --unshallow
 
 #softwareupdate --all --install --force
-
+brew pin java
+brew pin protobuf
 brew update
-brew cask uninstall --force java
+#brew cask uninstall --force java
 brew link gettext
 #brew doctor
 brew install p7zip qt5 sdl2 ccache conan ninja ffmpeg llvm boost openssl pulseaudio mbedtls zstd openssl gpm pkgconfig
