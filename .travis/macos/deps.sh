@@ -16,4 +16,4 @@ brew outdated cmake || brew upgrade cmake
 #brew upgrade gcc
 pip3 install macpack
 #brew install unicorn && UNICORN_QEMU_FLAGS="--python=`whereis python`" pip3 install unicorn
-#pip3 install conan
+pip3 install conan
