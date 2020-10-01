@@ -7,7 +7,7 @@ export PATH="/usr/local/sbin:$PATH"
 #softwareupdate --all --install --force
 #brew cask pin java
 brew pin protobuf
-#brew update
+brew update --force
 #brew cask uninstall --force java
 brew link gettext
 #brew doctor
