@@ -67,14 +67,15 @@ matrix:
     #  cache: ccache
 
 deploy:
-  provider: releases
+  provider: script
+  script: bash .travis/macos/deploy.sh
   api_key: $GITHUB_TOKEN
 #  secure: 
   file_glob: true
   file: "artifacts/*"
   skip_cleanup: true
   on:
-    tags: true
+    branch: mac-1014
 
 #notifications:
 #  webhooks:
