@@ -60,6 +60,7 @@ else()
         -Wmissing-declarations
         -Wno-attributes
         -Wno-unused-parameter
+        -faligned-allocation
     )
 
     # Set file offset size to 64 bits.
