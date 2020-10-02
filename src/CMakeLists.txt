@@ -58,6 +58,7 @@ else()
         -Werror=reorder
         -Wextra
         -Wmissing-declarations
+        -Wdefaulted-function-deleted
         -Wno-attributes
         -Wno-unused-parameter
         -faligned-allocation
