@@ -10,8 +10,9 @@ export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/llvm@9/bin:$PATH"
 
 export CC="clang"
 export CXX="clang++"
-export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl@1.1/lib"
-export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl@1.1/include"
+export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl/lib"
+export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl/include"
+export cxxflags='-std=c++20'
 
 # TODO: Build using ninja instead of make
 mkdir build && cd build
