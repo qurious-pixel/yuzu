@@ -64,6 +64,7 @@ matrix:
           - openssl 
           - zstd
           - boost
+          - libzip
       install:
       #- "./.travis/macos/deps.sh"
       - pip3 install macpack
