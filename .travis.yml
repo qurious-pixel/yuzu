@@ -48,7 +48,26 @@ matrix:
       env: NAME="macos build"
       sudo: false
       osx_image: xcode12
-      install: "./.travis/macos/deps.sh"
+      addons:
+        homebrew:
+          packages:
+          - p7zip 
+          - sdl2 
+          - ccache 
+          - ninja 
+          - ffmpeg 
+          - pulseaudio
+          - mbedtls 
+          - gpm 
+          - pkgconfig
+          - qt 
+          - openssl 
+          - zstd
+          - boost
+      install:
+      #- "./.travis/macos/deps.sh"
+      - pip3 install macpack
+      - pip3 install conan
       script: "./.travis/macos/build.sh"
       after_success: "./.travis/macos/upload.sh"
     #  cache: ccache
