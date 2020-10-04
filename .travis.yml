@@ -65,6 +65,7 @@ matrix:
           - zstd
           - boost
           - libzip
+          - clang-format
       install:
       #- "./.travis/macos/deps.sh"
       - pip3 install macpack
@@ -95,7 +96,7 @@ deploy:
   file: "artifacts/*"
   skip_cleanup: true
   on:
-    branch: mac2
+    branch: mac3
 
 #notifications:
 #  webhooks:
