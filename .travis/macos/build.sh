@@ -2,7 +2,7 @@
 
 set -o pipefail
 
-export MACOSX_DEPLOYMENT_TARGET=10.14
+export MACOSX_DEPLOYMENT_TARGET=10.15
 export Qt5_DIR=$(brew --prefix)/opt/qt5
 export UNICORNDIR=$(pwd)/externals/unicorn
 #export UNICORNDIR=/usr/local/Cellar/unicorn/1.0.1
@@ -12,7 +12,7 @@ export CC="clang"
 export CXX="clang++"
 export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl/include"
-export cxxflags='-std=c++20'
+export CXXFLAGS='-std=c++20'
 
 # TODO: Build using ninja instead of make
 mkdir build && cd build
