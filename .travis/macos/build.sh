@@ -12,7 +12,7 @@ export CC="clang"
 export CXX="clang++"
 export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl/include"
-export CXXFLAGS='-std=c++2a'
+export CXXFLAGS='-std=c++17'
 
 # TODO: Build using ninja instead of make
 mkdir build && cd build
