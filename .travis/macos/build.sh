@@ -21,6 +21,6 @@ cmake --version
 cmake .. -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX"
 #ninja
 make clang-format 
-make-j$(nproc)
+make -j$(nproc)
 
 ccache -s
