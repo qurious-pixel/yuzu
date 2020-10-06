@@ -66,7 +66,7 @@ matrix:
           - boost
           - libzip
           - clang-format 
-          - gcc
+          - gcc@10
           #update: true
       install:
       #- "./.travis/macos/deps.sh"
