@@ -2,7 +2,7 @@ language: cpp
 cache: ccache
 matrix:
   include:
-        - os: osx
+    - os: osx
       env: NAME="macos build"
       sudo: false
       osx_image: xcode12
