@@ -14,6 +14,19 @@ export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl@1.1/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl@1.1v/include"
 export CXXFLAGS='-std=c++17'
 
+# Setup vulkan and gfx-rs/portability
+curl -sLO https://github.com/gfx-rs/portability/releases/download/latest/gfx-portability-macos-latest.zip
+unzip -: gfx-portability-macos-latest.zip
+curl -sLO https://github.com/KhronosGroup/Vulkan-Headers/archive/sdk-1.1.106.0.zip
+unzip -: sdk-*.zip
+mkdir vulkan-sdk
+ln -s "${PWD}"/Vulkan-Headers*/include vulkan-sdk/include
+mkdir vulkan-sdk/lib
+cp target/release/libportability.dylib vulkan-sdk/lib/libVulkan.dylib
+# Let macdeployqt locate and install Vulkan library
+install_name_tool -id "${PWD}"/vulkan-sdk/lib/libVulkan.dylib vulkan-sdk/lib/libVulkan.dylib
+export VULKAN_SDK="${PWD}/vulkan-sdk"
+
 # TODO: Build using ninja instead of make
 mkdir build && cd build
 cmake --version
