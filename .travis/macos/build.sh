@@ -16,6 +16,10 @@ export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl@1.1/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl@1.1v/include"
 export CXXFLAGS='-std=c++17'
 
+which gcc
+gcc --version
+g++ --version
+
 # Setup vulkan and gfx-rs/portability
 curl -sLO https://github.com/gfx-rs/portability/releases/download/latest/gfx-portability-macos-latest.zip
 unzip -: gfx-portability-macos-latest.zip
