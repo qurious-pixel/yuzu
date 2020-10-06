@@ -58,10 +58,8 @@ else()
         -Werror=reorder
         -Wextra
         -Wmissing-declarations
-        -Wdefaulted-function-deleted
         -Wno-attributes
         -Wno-unused-parameter
-        -faligned-allocation
     )
 
     # Set file offset size to 64 bits.
