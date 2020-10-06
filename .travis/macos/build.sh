@@ -19,8 +19,6 @@ export CXXFLAGS='-std=c++17'
 which gcc
 gcc --version
 g++ --version
-ls -al /usr/local/bin/
-ls -al /usr/local/opt/ccache/libexec/
 
 # Setup vulkan and gfx-rs/portability
 curl -sLO https://github.com/gfx-rs/portability/releases/download/latest/gfx-portability-macos-latest.zip
