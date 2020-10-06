@@ -10,8 +10,8 @@ export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/llvm/bin:/usr/local/op
 
 #export CC="clang"
 #export CXX="clang++"
-export CC="gcc"
-export CXX="g++"
+export CC="/usr/local/bin/gcc"
+export CXX="/usr/local/bin/g++"
 export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl@1.1/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl@1.1v/include"
 export CXXFLAGS='-std=c++17'
