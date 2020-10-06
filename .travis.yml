@@ -2,49 +2,7 @@ language: cpp
 cache: ccache
 matrix:
   include:
-    #- os: linux
-     # env: NAME="linux appimage"
-     # sudo: required
-     # dist: trusty
-     # services: docker
-     # addons:
-     #   apt:
-     #     packages:
-     #       - p7zip-full
-     # install: 
-     #  - docker pull quriouspixel/yuzu:latest
-     # script: 
-     #  - "./.travis/appimage/build.sh"
-     # after_success:
-     # - ls -al artifacts/
-     # - cd artifacts/
-     # - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-     # - chmod a+x upload.sh
-     # - bash upload.sh yuzu-x86_64.AppImage* 
-      #branches:
-  #except:
-    #- /^(?i:continuous.*)$/
-    #- os: linux
-    # env: NAME="clang-format"
-    #  sudo: required
-    #  dist: trusty
-    #  services: docker
-    #  install: "./.travis/clang-format/deps.sh"
-    #  script: "./.travis/clang-format/build.sh"
-    #- os: linux
-    #  env: NAME="linux build"
-    #  sudo: required
-    #  dist: trusty
-    #  services: docker
-    #  addons:
-    #    apt:
-    #      packages:
-    #        - p7zip-full
-    #  install: "./.travis/linux/deps.sh"
-    #  script: "./.travis/linux/build.sh"
-    #  after_success: "./.travis/linux/upload.sh"
-    #  cache: ccache
-    - os: osx
+        - os: osx
       env: NAME="macos build"
       sudo: false
       osx_image: xcode12
@@ -52,7 +10,7 @@ matrix:
         homebrew:
           packages:
           - p7zip 
-          #- sdl2 
+          - sdl2 
           - ccache 
           - ninja 
           - ffmpeg 
@@ -72,23 +30,19 @@ matrix:
       #- "./.travis/macos/deps.sh"
       - pip3 install macpack
       - pip3 install conan
-      script: "./.travis/macos/build.sh"
-      after_success: "./.travis/macos/upload.sh"
-    #  cache: ccache
-    #- os: linux
-    #  env: NAME="MinGW build"
-    #  sudo: required
-    #  dist: trusty
-    #  services: docker
-    #  addons:
-    #    apt:
-    #      packages:
-    #        - p7zip-full
-    #  install: "./.travis/linux-mingw/deps.sh"
-    #  script: "./.travis/linux-mingw/build.sh"
-    #  after_success: "./.travis/linux-mingw/upload.sh"
-    #  cache: ccache
-
+      script: 
+      #- "./.travis/macos/build.sh"
+      - git clone --recursive https://github.com/yuzu-emu/yuzu
+      - cd yuzu
+      - git submodule update --init --recursive
+      - export Qt5_DIR=$(brew --prefix)/opt/qt5
+      - mkdir build
+      - cd build
+      - cmake .. -DCMAKE_BUILD_TYPE=Release
+      - make -j4
+      after_success: 
+      - echo "success"
+      #- "./.travis/macos/upload.sh"
 deploy:
   provider: script
   script: bash .travis/macos/deploy.sh
@@ -98,9 +52,4 @@ deploy:
   file: "artifacts/*"
   skip_cleanup: true
   on:
-    branch: mac3
-
-#notifications:
-#  webhooks:
-#    urls:
-#      - https://api.yuzu-emu.org/code/travis/notify
+    branch: mac-git
