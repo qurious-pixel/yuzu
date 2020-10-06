@@ -10,8 +10,8 @@ export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/llvm/bin:/usr/local/op
 
 #export CC="clang"
 #export CXX="clang++"
-export CC="/usr/local/bin/gcc"
-export CXX="/usr/local/bin/g++"
+export CC="/usr/local/bin/gcc-10"
+export CXX="/usr/local/bin/g++-10"
 export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl@1.1/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl@1.1v/include"
 export CXXFLAGS='-std=c++17'
@@ -19,6 +19,8 @@ export CXXFLAGS='-std=c++17'
 which gcc
 gcc --version
 g++ --version
+ls -al /usr/local/bin/
+ls -al /usr/local/opt/ccache/libexec/
 
 # Setup vulkan and gfx-rs/portability
 curl -sLO https://github.com/gfx-rs/portability/releases/download/latest/gfx-portability-macos-latest.zip
