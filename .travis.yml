@@ -52,7 +52,7 @@ matrix:
         homebrew:
           packages:
           - p7zip 
-          - sdl2 
+          #- sdl2 
           - ccache 
           - ninja 
           - ffmpeg 
