@@ -5,6 +5,7 @@ set -o pipefail
 export MACOSX_DEPLOYMENT_TARGET=10.13
 export Qt5_DIR=$(brew --prefix)/opt/qt5
 export UNICORNDIR=$(pwd)/externals/unicorn
+export OPENSSL_ROOT_DIR=/usr/local/opt/openssl/
 #export UNICORNDIR=/usr/local/Cellar/unicorn/1.0.1
 export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/llvm/bin:/usr/local/opt/openssl/bin:$PATH"
 
