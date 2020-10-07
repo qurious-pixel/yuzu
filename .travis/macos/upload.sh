@@ -8,7 +8,7 @@ COMPRESSION_FLAGS="-czvf"
 
 mkdir "$REV_NAME"
 
-cp build/bin/* "$REV_NAME"
+#cp build/bin/* "$REV_NAME"
 cp -r build/bin/yuzu.app "$REV_NAME"
 
 # move libs into folder for deployment
