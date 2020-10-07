@@ -23,3 +23,4 @@ mv "$REV_NAME" $RELEASE_NAME
 # move the compiled archive into the artifacts directory to be uploaded by travis releases
 mv "$ARCHIVE_NAME" artifacts/
 mv "$REV_NAME.7z" artifacts/
+ls -al artifacts/
