@@ -37,8 +37,7 @@ matrix:
       - git submodule update --init --recursive
       - export Qt5_DIR=$(brew --prefix)/opt/qt5
       - export SDL2_DIR=/usr/local/Cellar/sdl2/2.0.12_1/lib/cmake/SDL2/
-      - ls -al /usr/local/Cellar/sdl2/
-      - ls -al /usr/local/Cellar/sdl2/2.0.12_1/
+      - cp -r externals/MoltenVK/include/{MoltenVK,vulkan-portability} ./src/
       - mkdir build
       - cd build
       - cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
@@ -46,7 +45,7 @@ matrix:
       - ninja
       after_success: 
       - echo "success"
-      #- "./.travis/macos/upload.sh"
+      - "./.travis/macos/upload.sh"
 deploy:
   provider: script
   script: bash .travis/macos/deploy.sh
