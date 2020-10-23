@@ -54,4 +54,4 @@ deploy:
   file: "artifacts/*"
   skip_cleanup: true
   on:
-    branch: mac-git
+    branch: mac-git-new
