@@ -16,6 +16,8 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl@1.1/incl
 git clone --recursive --single-branch -b latest-mac-stuff https://github.com/jroweboy/yuzu.git
 cd yuzu
 
+cp -r externals/MoltenVK/include/{MoltenVK,vulkan-portability} ./src/
+
 # TODO: Build using ninja instead of make
 mkdir build && cd build
 cmake --version
