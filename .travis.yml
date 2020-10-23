@@ -36,7 +36,7 @@ matrix:
       - cd yuzu
       - git submodule update --init --recursive
       - export Qt5_DIR=$(brew --prefix)/opt/qt5
-      - export SDL2_DIR=/usr/local/bin/sdl2
+      - export SDL2_DIR=/usr/local/Cellar/sdl2/2.0.12_1/lib/cmake/SDL2/
       - mkdir build
       - cd build
       - cmake .. -DCMAKE_BUILD_TYPE=Release
