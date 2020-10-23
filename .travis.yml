@@ -48,7 +48,31 @@ matrix:
       env: NAME="macos build"
       sudo: false
       osx_image: xcode10.2
-      install: "./.travis/macos/deps.sh"
+      addons:
+        homebrew:
+          packages:
+          - p7zip 
+          - sdl2 
+          - ccache 
+          - ninja 
+          - ffmpeg 
+          - pulseaudio
+          - mbedtls 
+          - gpm 
+          - pkgconfig
+          - qt 
+          - openssl 
+          - zstd
+          - boost
+          - libzip
+          - clang-format 
+          - gcc@10
+          #update: true
+      install:
+      #- "./.travis/macos/deps.sh"
+      - pip3 install macpack
+      - pip3 install conan      
+      #install: "./.travis/macos/deps.sh"
       script: "./.travis/macos/build.sh"
       after_success: "./.travis/macos/upload.sh"
     #  cache: ccache
