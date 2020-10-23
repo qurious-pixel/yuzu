@@ -12,6 +12,10 @@ export CXX="clang++"
 export LDFLAGS="-L/usr/local/opt/llvm/lib -L/usr/local/opt/openssl@1.1/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl@1.1/include"
 
+#download from git
+git clone --recursive --single-branch -b latest-mac-stuff https://github.com/jroweboy/yuzu.git
+cd yuzu
+
 # TODO: Build using ninja instead of make
 mkdir build && cd build
 cmake --version
