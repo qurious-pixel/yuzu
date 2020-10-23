@@ -3,7 +3,7 @@
 . .travis/common/pre-upload.sh
 
 export REV_NAME="yuzu-osx-${GITDATE}-${GITREV}"
-ARCHIVE_NAME="${REV_NAME}.tar.gz"
+export ARCHIVE_NAME="${REV_NAME}.tar.gz"
 COMPRESSION_FLAGS="-czvf"
 
 mkdir "$REV_NAME"
