@@ -25,7 +25,7 @@ matrix:
           - libzip
           - clang-format 
           - gcc@10
-          #update: true
+          update: true
       install:
       #- "./.travis/macos/deps.sh"
       - pip3 install macpack
