@@ -41,9 +41,9 @@ matrix:
       - ls -al /usr/local/Cellar/sdl2/2.0.12_1/
       - mkdir build
       - cd build
-      - cmake .. -DCMAKE_BUILD_TYPE=Release
-      - make -j4
-      #- ninja
+      - cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
+      #- make -j4
+      - ninja
       after_success: 
       - echo "success"
       #- "./.travis/macos/upload.sh"
