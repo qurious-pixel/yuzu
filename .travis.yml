@@ -36,10 +36,12 @@ matrix:
       - cd yuzu
       - git submodule update --init --recursive
       - export Qt5_DIR=$(brew --prefix)/opt/qt5
+      - export SDL2_DIR=/usr/local/bin/sdl2
       - mkdir build
       - cd build
       - cmake .. -DCMAKE_BUILD_TYPE=Release
-      - make -j4
+      #- make -j4
+      - ninja
       after_success: 
       - echo "success"
       #- "./.travis/macos/upload.sh"
