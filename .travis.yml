@@ -32,7 +32,7 @@ matrix:
       - pip3 install conan
       script: 
       #- "./.travis/macos/build.sh"
-      - git clone --recursive https://github.com/yuzu-emu/yuzu
+      - git clone --recursive --single-branch -b latest-mac-stuff https://github.com/jroweboy/yuzu.git
       - cd yuzu
       - git submodule update --init --recursive
       - export Qt5_DIR=$(brew --prefix)/opt/qt5
