@@ -43,7 +43,7 @@ matrix:
       - cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
       #- make -j4
       - ninja
-      after_success: "./.travis/macos/upload.sh"
+      after_success: "./yuzu/.travis/macos/upload.sh"
 deploy:
   provider: script
   script: bash .travis/macos/deploy.sh
