@@ -73,6 +73,10 @@ matrix:
       install:
       #- "./.travis/macos/deps.sh"
       - ls -al /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
+      - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.13.sdk.tar.xz
+      - tar -xvf MacOSX10.13.sdk.tar.xz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
+      - ls -al /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
+      - cat /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
       - pip3 install macpack
       - pip3 install conan      
       #install: "./.travis/macos/deps.sh"
