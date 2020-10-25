@@ -52,35 +52,32 @@ matrix:
       osx_image: xcode10.2
       addons:
         homebrew:
-          #packages:
-          #- p7zip 
-          #- sdl2 
-          #- ccache 
-          #- ninja 
-          #- ffmpeg 
-          #- pulseaudio
-          #- mbedtls 
-          #- gpm 
-          #- pkgconfig
-          #- qt 
-          #- openssl 
-          #- zstd
-          #- boost
-          #- libzip
-          #- clang-format 
-          #- gcc@10
-          #update: true
+          packages:
+          - p7zip 
+          - sdl2 
+          - ccache 
+          - ninja 
+          - ffmpeg 
+          - pulseaudio
+          - mbedtls 
+          - gpm 
+          - pkgconfig
+          - qt 
+          - openssl 
+          - zstd
+          - boost
+          - libzip
+          - clang-format 
+          - gcc@10
+          update: true
       install:
       #- "./.travis/macos/deps.sh"
-      - ls -al /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
       - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.13.sdk.tar.xz
-      - tar -xvf MacOSX10.13.sdk.tar.xz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
-      - ls -al /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
-      - cat /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
+      - tar -xf MacOSX10.13.sdk.tar.xz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
       - pip3 install macpack
       - pip3 install conan      
       #install: "./.travis/macos/deps.sh"
-      #script: "./.travis/macos/build.sh"
+      script: "./.travis/macos/build.sh"
       after_success: "./.travis/macos/upload.sh"
     #  cache: ccache
     #- os: linux
