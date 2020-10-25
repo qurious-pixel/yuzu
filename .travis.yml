@@ -108,7 +108,7 @@ deploy:
   file: "artifacts/*"
   skip_cleanup: true
   on:
-    branch: mac-1013
+    branch: mac-1013-12
 
 #notifications:
 #  webhooks:
