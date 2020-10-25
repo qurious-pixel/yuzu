@@ -49,7 +49,7 @@ matrix:
     - os: osx
       env: NAME="macos build"
       sudo: false
-      osx_image: xcode10.2
+      osx_image: xcode12
       addons:
         homebrew:
           packages:
@@ -69,7 +69,7 @@ matrix:
           - libzip
           - clang-format 
           - gcc@10
-          update: true
+          #update: true
       install:
       #- "./.travis/macos/deps.sh"
       - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.13.sdk.tar.xz
