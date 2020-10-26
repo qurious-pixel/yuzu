@@ -50,7 +50,7 @@ matrix:
       env: NAME="macos build"
       sudo: false
       osx_image: xcode12
-      #addons:
+      addons:
         homebrew:
           packages:
           - p7zip 
