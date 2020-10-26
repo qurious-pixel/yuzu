@@ -74,7 +74,7 @@ matrix:
       #- "./.travis/macos/deps.sh"
       - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.13.sdk.tar.xz
       - tar -xf MacOSX10.13.sdk.tar.xz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
-      - ln -s /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+      - cat /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist | grep MinimumSDKVersion
       - rm /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
       - mv /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
       - mv /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
@@ -82,8 +82,11 @@ matrix:
       - pip3 install macpack
       - pip3 install conan      
       #install: "./.travis/macos/deps.sh"
-      script: "./.travis/macos/build.sh"
-      after_success: "./.travis/macos/upload.sh"
+      script: 
+      #- "./.travis/macos/build.sh"
+      mkdir -p artifacts/
+      cp /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist artifacts/
+      #after_success: "./.travis/macos/upload.sh"
     #  cache: ccache
     #- os: linux
     #  env: NAME="MinGW build"
