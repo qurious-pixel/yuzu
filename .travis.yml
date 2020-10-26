@@ -52,29 +52,32 @@ matrix:
       osx_image: xcode12
       addons:
         homebrew:
-          packages:
-          - p7zip 
-          - sdl2 
-          - ccache 
-          - ninja 
-          - ffmpeg 
-          - pulseaudio
-          - mbedtls 
-          - gpm 
-          - pkgconfig
-          - qt 
-          - openssl 
-          - zstd
-          - boost
-          - libzip
-          - clang-format 
-          - gcc@10
+          #packages:
+          #- p7zip 
+          #- sdl2 
+          #- ccache 
+          #- ninja 
+          #- ffmpeg 
+          #- pulseaudio
+          #- mbedtls 
+          #- gpm 
+          #- pkgconfig
+          #- qt 
+          #- openssl 
+          #- zstd
+          #- boost
+          #- libzip
+          #- clang-format 
+          #- gcc@10
           #update: true
       install:
       #- "./.travis/macos/deps.sh"
       - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.13.sdk.tar.xz
       - tar -xf MacOSX10.13.sdk.tar.xz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
-      - cat /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist | grep MinimumSDKVersion
+      - plutil -convert xml1 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
+      - sed -i -e 's|<string>10.15</string>|<string>10.13</string>|g' /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
+      - cat /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
+      - plutil -convert binary1 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
       - rm /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
       - mv /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
       - mv /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
@@ -84,8 +87,8 @@ matrix:
       #install: "./.travis/macos/deps.sh"
       script: 
       #- "./.travis/macos/build.sh"
-      - mkdir -p artifacts/
-      - cp /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist artifacts/
+      #- mkdir -p artifacts/
+      #- cp /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist artifacts/
       #after_success: "./.travis/macos/upload.sh"
     #  cache: ccache
     #- os: linux
