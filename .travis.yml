@@ -1,9 +1,8 @@
 language: cpp
-cache: 
+cache: ccache
   directories:
     - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
-  - ccache
 git:
     submodules: false
 matrix:
