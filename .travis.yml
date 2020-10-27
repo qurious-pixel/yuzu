@@ -1,5 +1,5 @@
 language: cpp
-cache: ccache
+cache: 
   directories:
     - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
