@@ -15,6 +15,7 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/opt/openssl@1.1/incl
 #download from git
 git clone --recursive --single-branch -b latest-mac-stuff https://github.com/jroweboy/yuzu.git
 cd yuzu
+sed -i -e 's|10.15.0|10.13.1|g' CMakeLists.txt
 
 cp -r externals/MoltenVK/include/{MoltenVK,vulkan-portability} ./src/
 
