@@ -1,6 +1,7 @@
 language: cpp
 cache: 
   directories:
+    - $HOME/build/qurious-pixel/yuzu/yuzu/build
     - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
   ccache: true  
@@ -93,6 +94,7 @@ matrix:
       - pip3 install conan      
       #install: "./.travis/macos/deps.sh"
       script: 
+      - echo $TRAVIS_BUILD_DIR
       - "./.travis/macos/build.sh"
       after_success: "./.travis/macos/upload.sh"
     #  cache: ccache
