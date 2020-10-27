@@ -72,7 +72,7 @@ matrix:
           update: true
       install:
       #- "./.travis/macos/deps.sh"
-      - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.13.sdk.tar.xz
+      - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.14.sdk.tar.xz
       - tar -xf MacOSX10.14.sdk.tar.xz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
       - plutil -convert xml1 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
       - sed -i -e 's|<string>10.15</string>|<string>10.14</string>|g' /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
