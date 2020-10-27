@@ -59,24 +59,24 @@ matrix:
       osx_image: xcode12
       addons:
         homebrew:
-          packages:
-          - p7zip 
-          - sdl2 
-          - ccache 
-          - ninja 
-          - ffmpeg 
-          - pulseaudio
-          - mbedtls 
-          - gpm 
-          - pkgconfig
-          - qt 
-          - openssl 
-          - zstd
-          - boost
-          - libzip
-          - clang-format 
-          - gcc@10
-          update: true
+          #packages:
+          #- p7zip 
+          #- sdl2 
+          #- ccache 
+          #- ninja 
+          #- ffmpeg 
+          #- pulseaudio
+          #- mbedtls 
+          #- gpm 
+          #- pkgconfig
+          #- qt 
+          #- openssl 
+          #- zstd
+          #- boost
+          #- libzip
+          #- clang-format 
+          #- gcc@10
+          #update: true
       install:
       #- "./.travis/macos/deps.sh"
       - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.14.sdk.tar.xz
