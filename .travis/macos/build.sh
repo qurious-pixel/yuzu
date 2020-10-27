@@ -25,6 +25,6 @@ cp -r externals/MoltenVK/include/{MoltenVK,vulkan-portability} ./src/
 mkdir build && cd build
 cmake --version
 cmake .. -GNinja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX"
-timeout 35m ninja -j4
+timeout 30m ninja -j4
 
 ccache -s
