@@ -23,9 +23,10 @@ cp -r externals/MoltenVK/include/{MoltenVK,vulkan-portability} ./src/
 
 # TODO: Build using ninja instead of make
 mkdir build && cd build
-ls -al .
-ls -d
-echo $pwd
+ls -al ../
+ls -d .
+ls -d ../
+echo $PWD
 cmake --version
 cmake .. -GNinja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX"
 timeout 30m ninja -j4
