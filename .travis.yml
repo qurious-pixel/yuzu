@@ -73,14 +73,14 @@ matrix:
       install:
       #- "./.travis/macos/deps.sh"
       - curl -sLO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.13.sdk.tar.xz
-      - tar -xf MacOSX10.13.sdk.tar.xz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
+      - tar -xf MacOSX10.14.sdk.tar.xz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
       - plutil -convert xml1 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
-      - sed -i -e 's|<string>10.15</string>|<string>10.13</string>|g' /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
+      - sed -i -e 's|<string>10.15</string>|<string>10.14</string>|g' /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
       - cat /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
       - plutil -convert binary1 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Info.plist
       - rm /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
       - mv /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
-      - mv /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+      - mv /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
       - ls -al /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
       - pip3 install macpack
       - pip3 install conan      
