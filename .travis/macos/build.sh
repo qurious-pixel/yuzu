@@ -25,7 +25,7 @@ cp -r externals/MoltenVK/include/{MoltenVK,vulkan-portability} ./src/
 ln -s $HOME/build-cache $TRAVIS_BUILD_DIR/yuzu/build && cd build
 #mkdir build && cd build
 cmake --version
-cmake .. -GNinja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX"
+cmake $TRAVIS_BUILD_DIR/yuzu -GNinja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX"
 timeout 30m ninja -j4
 
 ccache -s
