@@ -1,7 +1,7 @@
 language: cpp
 cache: 
   directories:
-    - $HOME/build/qurious-pixel/yuzu/yuzu/build
+    - $HOME/build-cache
     - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
   ccache: true  
