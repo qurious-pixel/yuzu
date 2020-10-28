@@ -60,23 +60,23 @@ matrix:
       osx_image: xcode12
       addons:
         homebrew:
-          #packages:
-          #- p7zip 
-          #- sdl2 
-          #- ccache 
-          #- ninja 
-          #- ffmpeg 
-          #- pulseaudio
-          #- mbedtls 
-          #- gpm 
-          #- pkgconfig
-          #- qt 
-          #- openssl 
-          #- zstd
-          #- boost
-          #- libzip
-          #- clang-format 
-          #- gcc@10
+          packages:
+          - p7zip 
+          - sdl2 
+          - ccache 
+          - ninja 
+          - ffmpeg 
+          - pulseaudio
+          - mbedtls 
+          - gpm 
+          - pkgconfig
+          - qt 
+          - openssl 
+          - zstd
+          - boost
+          - libzip
+          - clang-format 
+          - gcc@10
           #update: true
       install:
       #- "./.travis/macos/deps.sh"
@@ -93,8 +93,7 @@ matrix:
       - pip3 install macpack
       - pip3 install conan      
       #install: "./.travis/macos/deps.sh"
-      script: 
-      - echo $TRAVIS_BUILD_DIR
+      script:
       - "./.travis/macos/build.sh"
       after_success: "./.travis/macos/upload.sh"
     #  cache: ccache
