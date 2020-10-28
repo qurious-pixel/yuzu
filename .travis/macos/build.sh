@@ -22,7 +22,11 @@ sed -i -e 's|10.15.0|10.14.6|g' CMakeLists.txt
 cp -r externals/MoltenVK/include/{MoltenVK,vulkan-portability} ./src/
 rsync -av $HOME/build-cache/ $TRAVIS_BUILD_DIR/yuzu/build
 # TODO: Build using ninja instead of make
-mkdir build && cd build
+if [ -d build ] ; then
+    cd build
+else    
+    mkdir build && cd build
+fi    
 cmake --version
 cmake $TRAVIS_BUILD_DIR/yuzu -GNinja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX"
 rsync -av $TRAVIS_BUILD_DIR/yuzu/build $HOME/build-cache
