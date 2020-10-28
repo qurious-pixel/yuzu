@@ -29,7 +29,7 @@ else
 fi    
 cmake --version
 cmake $TRAVIS_BUILD_DIR/yuzu -GNinja -DYUZU_USE_BUNDLED_UNICORN=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX"
-rsync -av $TRAVIS_BUILD_DIR/yuzu/build $HOME/build-cache
+rsync -av $TRAVIS_BUILD_DIR/yuzu/build/ $HOME/build-cache
 timeout 30m ninja -j4
-rsync -av $TRAVIS_BUILD_DIR/yuzu/build $HOME/build-cache
+rsync -av $TRAVIS_BUILD_DIR/yuzu/build/ $HOME/build-cache
 ccache -s
