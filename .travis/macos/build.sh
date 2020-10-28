@@ -20,7 +20,7 @@ cd yuzu
 sed -i -e 's|10.15.0|10.14.6|g' CMakeLists.txt
 
 cp -r externals/MoltenVK/include/{MoltenVK,vulkan-portability} ./src/
-
+rsync -av $HOME/build-cache/ $TRAVIS_BUILD_DIR/yuzu/build
 # TODO: Build using ninja instead of make
 mkdir build && cd build
 cmake --version
