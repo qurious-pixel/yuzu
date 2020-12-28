@@ -22,7 +22,7 @@ jobs:
         run: |
               mkdir -p "$HOME/.ccache"
               docker pull quriouspixel/yuzu:latest
-              docker run -u root -e ENABLE_COMPATIBILITY_REPORTING --env-file .travis/travis-ci.env -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache quriouspixel/yuzu:latest /bin/bash /yuzu/.travis/docker.sh
+              docker run -u root -e ENABLE_COMPATIBILITY_REPORTING --env-file .travis/common/travis-ci.env -v $(pwd):/yuzu -v "$HOME/.ccache":/root/.ccache quriouspixel/yuzu:latest /bin/bash /yuzu/.travis/appimage/docker.sh
       - name: Run AppImage
         run:  echo "Success!"
       - name: Upload build
