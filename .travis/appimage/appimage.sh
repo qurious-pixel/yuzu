@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-branch=$TRAVIS_BRANCH
+branch=`echo ${GITHUB_REF##*/}`
 
 BUILDBIN=/yuzu/yuzu-mainline/build/bin
 BINFILE=yuzu-x86_64.AppImage
@@ -50,7 +50,7 @@ cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6 squashfs-root/usr/optional/libstdc++
 cp /tmp/zen/zenity squashfs-root/usr/bin/
 printf "#include <bits/stdc++.h>\nint main(){std::make_exception_ptr(0);std::pmr::get_default_resource();}" | $CXX -x c++ -std=c++2a -o $HOME/squashfs-root/usr/optional/checker -
 
-echo $TRAVIS_BUILD_ID > $HOME/squashfs-root/version.txt
+echo $GITHUB_RUN_ID > $HOME/squashfs-root/version.txt
 
 unset QT_PLUGIN_PATH
 unset LD_LIBRARY_PATH
