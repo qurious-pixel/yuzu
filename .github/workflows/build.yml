@@ -1,6 +1,6 @@
 name: AppImage
 
-on: push
+on: [push, pull_request]
 
 jobs:
   appimage:
